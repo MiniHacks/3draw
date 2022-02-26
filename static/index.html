@@ -81,7 +81,7 @@
                     id="teleHand"
                     joystick-levitation
                     teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
-                <a-entity oculus-touch-controls="hand: right" id="blockHand" spawn-oculus laser-controls>
+                <a-entity oculus-touch-controls="hand: right" id="blockHand" raycaster-listen laser-controls="hand: right">
                 </a-entity>
             </a-entity>
 
