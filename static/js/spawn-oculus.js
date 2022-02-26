@@ -1,9 +1,15 @@
 AFRAME.registerComponent("raycaster-listen", {
     init: function () {
-        this.el.addEventListener("raycaster-intersected", (evt) => {
+        const plane = document.querySelector("#plane");
+        const camera = document.querySelector("#camera");
+        plane.addEventListener("raycaster-intersected", (evt) => {
+            // console.log(Object.values(evt.detail.el));
+            if (evt.detail.el === camera) {
+                return;
+            }
             this.raycaster = evt.detail.el;
         });
-        this.el.addEventListener("raycaster-intersected-cleared", (evt) => {
+        plane.addEventListener("raycaster-intersected-cleared", (evt) => {
             this.raycaster = null;
         });
         const self = this;
@@ -23,8 +29,6 @@ AFRAME.registerComponent("raycaster-listen", {
             return;
         } // checks for null
         const plane = document.querySelector("#plane");
-
-        console.log(this.raycaster);
 
         let intersection = this.raycaster.components.raycaster.getIntersection(plane);
         if (!intersection) {
