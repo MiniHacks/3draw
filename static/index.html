@@ -60,6 +60,11 @@
                 </a-entity>
             </a-entity>
         </template>
+  
+        <template id="bookkeeper-template">
+          <a-entity bookkeeping=""></a-entity>
+        </template>
+  
     </a-assets>
     <a-entity id="player"
               networked="template:#avatar-template;attachTemplateToLocal:false;"
@@ -74,10 +79,12 @@
         ></a-sphere>
     </a-entity>
 
-    <a-entity
+    <!-- <a-entity
       id="bookkeeper-component" 
       bookkeeping=""
-    ></a-entity>
+      networked="template:#bookkeeper-template;attachTemplateToLocal:false;""
+    ></a-entity> -->
+
 
     <a-entity position="0 0 0"
               geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
@@ -92,9 +99,49 @@
 <div class="actions">
     <button id="mic-btn" type="button" class="button">Mute Mic</button>
     <button id="change-bookkeeping" type="button" class="button">change the bookkeeper-component</button>
+    <button id="make-bookkeeping" type="button" class="button">make a bookkeeper</button>
 </div>
 
 <script>
+  document.querySelector("#make-bookkeeping").onclick = () => {
+
+    console.log("attempting to add a bookkeeping entity");
+    let el = document.createElement("a-entity");
+    el.setAttribute("bookkeeping", "");
+    el.setAttribute("networked", "template: #bookkeeper-template;")
+    document.querySelector("a-scene").appendChild(el);
+  }
+
+  document.body.addEventListener('connected', function (evt) {
+    console.error('connected event. clientId =', evt.detail.clientId);
+    console.log("num book keeping components: ", document.querySelectorAll("a-entity[bookkeeping]").length);
+  });
+  
+  document.body.addEventListener('clientConnected', function (evt) {
+    console.error('clientConnected event. clientId =', evt.detail.clientId);
+    console.log("num book keeping components: ", document.querySelectorAll("a-entity[bookkeeping]").length);
+  });
+  
+  document.body.addEventListener('clientDisconnected', function (evt) {
+    console.error('clientDisconnected event. clientId =', evt.detail.clientId);
+    console.log("num book keeping components: ", document.querySelectorAll("a-entity[bookkeeping]").length);
+  });
+  
+  document.body.addEventListener('entityCreated', function (evt) {
+    console.error('entityCreated event', evt.detail.el);
+    console.log("num book keeping components: ", document.querySelectorAll("a-entity[bookkeeping]").length);
+  });
+  
+  document.body.addEventListener('entityRemoved', function(evt) {
+    console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
+    console.log("num book keeping components: ", document.querySelectorAll("a-entity[bookkeeping]").length);
+  });
+
+  //if (document.querySelectorAll("a-entity[bookkeeping]").length == 0) {
+  //} else {
+  //  console.log("already found bookkeeping entity")
+  // }
+
   let micEnabled = true;
   const micBtnEle = document.getElementById('mic-btn');
   NAF.schemas.add({
@@ -110,11 +157,14 @@
     ]
   });
 
-  let counter = 0;
+  NAF.schemas.add({
+    template: "#bookkeeper-template",
+    components: [ "bookkeeping" ]
+  })
 
   document.getElementById("change-bookkeeping").onclick = (ev) => {
-    const bookkeeperEntity = document.querySelector("#bookkeeper-component");
-    // bookkeeperEntity.setAttribute('bookkeeping', 'banana', counter++);
+    const bookkeeperEntity = document.querySelector("a-entity[bookkeeping]");
+    bookkeeperEntity.setAttribute('bookkeeping', 'timeRemaining', bookkeeperEntity.getAttribute('bookkeeping').timeRemaining + 1);
   }
 
   function onConnect() {
