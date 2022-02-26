@@ -4,114 +4,132 @@
     <title>3Draw</title>
     <meta name="description" content="3Draw | Draw with friends in real-time!">
 
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
-    <script src="/easyrtc/easyrtc.js"></script>
-    <script src="/dist/networked-aframe.js"></script>
+        <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+        <script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
+        <script src="/easyrtc/easyrtc.js"></script>
+        <script src="/dist/networked-aframe.js"></script>
+        <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
+        <script src="js/block.js"></script>
+        <script src="js/joystick-controls.js"></script>
+        <script src="js/spawn-primitive.js"></script>
+        <script src="js/spawn-in-circle.component.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    </head>
+    <body>
+        <a-scene
+            networked-scene="
+            room: basic-audio;
+            debug: true;
+            adapter: easyrtc;
+            audio: true;
+        ">
+            <a-assets>
+                <img
+                    id="grid"
+                    src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png"
+                    crossorigin="anonymous"
+                    alt="" />
+                <img id="sky" src="https://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" alt="" />
 
-    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
-    <script src="js/spawn-in-circle.component.js"></script>
-    <script src="js/speech-recognition.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
-</head>
-<body>
-<a-scene networked-scene="
-      room: basic-audio;
-      debug: true;
-      adapter: easyrtc;
-      audio: true;
-    ">
-    <a-assets>
-        <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous" alt="">
-        <img id="sky" src="https://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" alt=""/>
+                <template id="avatar-template">
+                    <a-entity class="avatar" networked-audio-source>
+                        <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
+                        <a-entity class="face" position="0 0.05 0">
+                            <a-sphere
+                                class="eye"
+                                color="#efefef"
+                                position="0.16 0.1 -0.35"
+                                scale="0.12 0.12 0.12">
+                                <a-sphere
+                                    class="pupil"
+                                    color="#000"
+                                    position="0 0 -1"
+                                    scale="0.2 0.2 0.2"></a-sphere>
+                            </a-sphere>
+                            <a-sphere
+                                class="eye"
+                                color="#efefef"
+                                position="-0.16 0.1 -0.35"
+                                scale="0.12 0.12 0.12">
+                                <a-sphere
+                                    class="pupil"
+                                    color="#000"
+                                    position="0 0 -1"
+                                    scale="0.2 0.2 0.2"></a-sphere>
+                            </a-sphere>
+                        </a-entity>
+                    </a-entity>
+                </template>
+            </a-assets>
 
-        <template id="avatar-template">
-            <a-entity class="avatar" networked-audio-source>
-                <a-sphere class="head"
-                          scale="0.45 0.5 0.4"
-                ></a-sphere>
-                <a-entity class="face"
-                          position="0 0.05 0"
-                >
-                    <a-sphere class="eye"
-                              color="#efefef"
-                              position="0.16 0.1 -0.35"
-                              scale="0.12 0.12 0.12"
-                    >
-                        <a-sphere class="pupil"
-                                  color="#000"
-                                  position="0 0 -1"
-                                  scale="0.2 0.2 0.2"
-                        ></a-sphere>
-                    </a-sphere>
-                    <a-sphere class="eye"
-                              color="#efefef"
-                              position="-0.16 0.1 -0.35"
-                              scale="0.12 0.12 0.12"
-                    >
-                        <a-sphere class="pupil"
-                                  color="#000"
-                                  position="0 0 -1"
-                                  scale="0.2 0.2 0.2"
-                        ></a-sphere>
-                    </a-sphere>
+            <a-entity id="player">
+                <a-entity
+                    id="head"
+                    networked="template:#avatar-template;attachTemplateToLocal:false;"
+                    camera
+                    position="0 1.6 0"
+                    spawn-in-circle="radius:3"
+                    wasd-controls
+                    look-controls>
+                    <a-cursor></a-cursor>
+                    <a-sphere class="head" visible="false" random-color></a-sphere>
                 </a-entity>
+                <a-entity
+                    oculus-touch-controls="hand: left"
+                    id="teleHand"
+                    thumbstick-logging
+                    teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
+                <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
             </a-entity>
-        </template>
-    </a-assets>
-    <a-entity id="player"
-              networked="template:#avatar-template;attachTemplateToLocal:false;"
-              camera
-              position="0 1.6 0"
-              spawn-in-circle="radius:3"
-              wasd-controls look-controls
-    >
-        <a-sphere class="head"
-                  visible="false"
-                  random-color
-        ></a-sphere>
-    </a-entity>
 
-    <a-entity position="0 0 0"
-              geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
-              material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
-    <a-entity light="color: #ccccff; intensity: 1; type: ambient;" visible=""></a-entity>
-    <a-entity light="color: #ffaaff; intensity: 1.5" position="5 5 5"></a-entity>
+            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
+            </a-box>
 
-    <a-sky src="#sky" rotation="0 -90 0"></a-sky>
-    <a-entity id="particles" particle-system="preset: snow"></a-entity>
-</a-scene>
+            <!-- TODO - delete spawn-primitive once a way to spawn out4side of plane is found -->
+            <a-entity
+                position="0 0 0"
+                geometry="primitive: plane; width: 10000; height: 10000;"
+                rotation="-90 0 0"
+                spawn-primitive
+                material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
+            <a-entity light="color: #ccccff; intensity: 1; type: ambient;" visible=""></a-entity>
+            <a-entity light="color: #ffaaff; intensity: 1.5" position="5 5 5"></a-entity>
 
-<div class="actions">
-    <button id="mic-btn" type="button" class="button">Mute Mic</button>
-</div>
+            <a-sky src="#sky" rotation="0 -90 0"></a-sky>
+            <a-entity id="particles" particle-system="preset: snow"></a-entity>
+        </a-scene>
 
-<script>
-  let micEnabled = true;
-  const micBtnEle = document.getElementById('mic-btn');
-  NAF.schemas.add({
-    template: '#avatar-template',
-    components: [
-      'position',
-      'rotation',
-      {
-        selector: '.head',
-        component: 'material',
-        property: 'color' // random color
-      }
-    ]
-  });
+        <div class="actions">
+            <button id="mic-btn" type="button" class="button">Mute Mic</button>
+        </div>
 
-  function onConnect() {
-    console.log("onConnect", new Date());
+        <script>
+            let micEnabled = true;
+            const micBtnEle = document.getElementById("mic-btn");
+            NAF.schemas.add({
+                template: "#avatar-template",
+                components: [
+                    "position",
+                    "rotation",
+                    {
+                        selector: ".head",
+                        component: "material",
+                        property: "color", // random color
+                    },
+                ],
+            });
 
-    micBtnEle.addEventListener('click', function () {
-      NAF.connection.adapter.enableMicrophone(!micEnabled);
-      micEnabled = !micEnabled;
-      micBtnEle.textContent = micEnabled ? 'Mute Mic' : 'Unmute Mic';
-    });
-  }
-</script>
-</body>
+            function onConnect() {
+                console.log("onConnect", new Date());
+
+                micBtnEle.addEventListener("click", function () {
+                    NAF.connection.adapter.enableMicrophone(!micEnabled);
+                    micEnabled = !micEnabled;
+                    micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+                });
+            }
+        </script>
+    </body>
 </html>
