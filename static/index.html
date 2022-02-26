@@ -109,7 +109,6 @@
 
         <div class="actions">
           <button id="mic-btn" type="button" class="button">Mute Mic</button>
-          <button id="change-bookkeeping" type="button" class="button">change the bookkeeper-component</button>
           <p style="color: white;">am i the bookkeeper? <span id="am-i-the-bookkeeper">yes</span></p>
           <button id="start-game" type="button" class="button" onclick="startgame()">start a game</button>
         </div>
@@ -150,11 +149,6 @@
                     },
                 ],
             });
-
-            document.getElementById("change-bookkeeping").onclick = (ev) => {
-              // const bookkeeperEntity = document.querySelector("a-entity[bookkeeping]");
-              // bookkeeperEntity.setAttribute('bookkeeping', 'timeRemaining', bookkeeperEntity.getAttribute('bookkeeping').timeRemaining + 1);
-            }
 
             function onConnect() {
                 console.log("onConnect", new Date());
