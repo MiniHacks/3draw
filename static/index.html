@@ -63,26 +63,29 @@
                     </a-entity>
                 </template>
             </a-assets>
-            <a-entity
-                oculus-touch-controls="hand: left"
-                id="teleHand"
-                teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
-            <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
-            <a-entity
-                id="player"
-                networked="template:#avatar-template;attachTemplateToLocal:false;"
-                camera
-                position="0 1.6 0"
-                spawn-in-circle="radius:3"
-                wasd-controls
-                look-controls>
-                <a-sphere class="head" visible="false" random-color></a-sphere>
+
+            <a-entity id="player">
+                <a-entity
+                    id="head"
+                    networked="template:#avatar-template;attachTemplateToLocal:false;"
+                    camera
+                    position="0 1.6 0"
+                    spawn-in-circle="radius:3"
+                    wasd-controls
+                    look-controls>
+                    <a-cursor></a-cursor>
+                    <a-sphere class="head" visible="false" random-color></a-sphere>
+                </a-entity>
+                <a-entity
+                    oculus-touch-controls="hand: left"
+                    id="teleHand"
+                    teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
+                <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
             </a-entity>
 
-            <a-box color="tomato" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
+            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
             </a-box>
 
-            <a-camera><a-cursor></a-cursor></a-camera>
             <!-- TODO - delete spawn-primitive once a way to spawn out4side of plane is found -->
             <a-entity
                 position="0 0 0"
