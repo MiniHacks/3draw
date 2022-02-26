@@ -98,14 +98,22 @@ NAF.connection.subscribeToDataChannel("bookkeepingUpdates", function (senderId, 
     }
 });
 
-const chooseFromWordList = () => wordList[Math.floor(Math.random() * wordList.length)];
+const chooseNWords = (k) => {
+    const result = Array(k);
+    Array(k).forEach((i) => {
+        result[i] = wordList[i];
+    });
 
-const chooseNWords = (n) => {
-    let retSet = new Set();
-    while (retSet.size < n) {
-        retSet.add(chooseFromWordList());
+    let W = Math.exp(Math.log(Math.random()) / k);
+
+    const n = wordList.length;
+    for (let i = 0; i < n; i++) { 
+        i = i + Math.floor(Math.log(Math.random()) / Math.log(1 - W)) + 1;
+        if (i <= n) {
+            result[Math.floor(Math.random() * k)] = wordList[i];
+            W = W * Math.exp(Math.log(Math.random()) / k);
+        }
     }
-    return [...retSet.values()];
 }
 
 const startgame = () => {
