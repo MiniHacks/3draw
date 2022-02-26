@@ -24,6 +24,7 @@ let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
 const CHOOSING_TIME = 15;
 const DRAWING_TIME = 150;
 
+let ourNetworkId = null;
 let hostId = null;
 
 let bookkeeping = {
@@ -59,11 +60,28 @@ const setBookkeeping = (newValue) => {
         console.log("sent ", bookkeeping);
     }
 
+    updateState();
+
     let el = document.querySelector("#am-i-the-host");
     if (el) {
-        el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
-            bookkeeping.timeRemaining
-        }`;
+        el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${bookkeeping.timeRemaining
+            } ${bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""}`;
+    }
+};
+
+const updateState = () => {
+    if (ourNetworkId == bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn]) {
+        // our turn
+        if (bookkeeping.turnState == TurnState.CHOOSING) {
+            // we need to choose
+        } else {
+            // we need to draw the word
+        }
+    } else {
+        // not our turn
+        if (bookkeeping.turnState == TurnState.DRAWING) {
+            // we need to guess the word
+        }
     }
 };
 
@@ -79,6 +97,12 @@ const removePlayer = (clientId) => {
 
 // wait for body to load
 window.onload = () => {
+    document.body.addEventListener("connected", function (evt) {
+        ourNetworkId = evt.detail.clientId;
+        bookkeeping.turnOrder.unshift(ourNetworkId);
+        document.querySelector("#whoami").innerHTML = ourNetworkId;
+    });
+
     document.body.addEventListener("clientConnected", function (evt) {
         if (bookkeeping.amITheHost) {
             addPlayer(evt.detail.clientId);
@@ -127,6 +151,15 @@ const chooseAWord = (word) => {
     NAF.connection.sendDataGuaranteed(hostId, DataChannel.CHOSE_WORD, { chosenWord: word });
 };
 
+const countDownFromTimeRemaining = () =>
+    rxjs.timer(0, 1000).pipe(
+        rxjs.operators.takeWhile(() => bookkeeping.timeRemaining > 0),
+        rxjs.operators.tap((secondsElapsed) => {
+            bookkeeping.timeRemaining -= 1;
+            setBookkeeping(bookkeeping);
+        })
+    );
+
 const startgame = async () => {
     console.log("someone is trying to start the game!");
 
@@ -151,16 +184,11 @@ const startgame = async () => {
         );
     });
 
-    // start timer (networked)
+    // start timer for choosing a word (networked)
     const { chosenWord } = await rxjs.lastValueFrom(
         rxjs.race(
             // If they exceed the time limit, then pick the first word for them
-            rxjs.timer(0, 1000).pipe(
-                rxjs.operators.take(bookkeeping.timeRemaining),
-                rxjs.operators.tap((secondsElapsed) => {
-                    bookkeeping.timeRemaining -= 1;
-                    setBookkeeping(bookkeeping);
-                }),
+            countDownFromTimeRemaining().pipe(
                 rxjs.operators.last(),
                 rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
             ),
@@ -168,5 +196,13 @@ const startgame = async () => {
         )
     );
 
-    console.log("the chosen word was ", chosenWord)
+    // now we have chosen a word
+    console.log("the chosen word was ", chosenWord);
+
+    // move to next phase
+    bookkeeping.currentWord = chosenWord;
+    bookkeeping.timeRemaining = DRAWING_TIME;
+    bookkeeping.turnState = TurnState.DRAWING;
+
+    countDownFromTimeRemaining().subscribe();
 };
