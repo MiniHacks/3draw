@@ -29,7 +29,7 @@ let hostId = null;
 
 let bookkeeping = {
     currentWord: "",
-    availableWords: [],
+    availableWords: null,
     totalNumberOfRounds: 5,
     currentRoundNumber: 0,
     turnOrder: [],
@@ -46,6 +46,9 @@ const DataChannel = {
     CHOSE_WORD: "choseWord",
 };
 Object.freeze(DataChannel);
+
+const wordChooserBS = new rxjs.BehaviorSubject(null);
+const wordDisplayBS = new rxjs.BehaviorSubject("");
 
 const setBookkeeping = (newValue) => {
     // FIXME: makes it difficult to change the host in the middle of the game
@@ -64,26 +67,37 @@ const setBookkeeping = (newValue) => {
 
     let el = document.querySelector("#am-i-the-host");
     if (el) {
-        el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
+        el.innerHTML = ` ${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
             bookkeeping.timeRemaining
         } ${bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""}`;
     }
 };
 
 const updateState = () => {
+    const state = {
+        wordsToChoose: null,
+        word: "",
+    };
+
     if (ourNetworkId == bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn]) {
         // our turn
         if (bookkeeping.turnState == TurnState.CHOOSING) {
             // we need to choose
+            state.wordsToChoose = bookkeeping.availableWords;
         } else {
+            state.word = bookkeeping.currentWord;
             // we need to draw the word
         }
     } else {
         // not our turn
         if (bookkeeping.turnState == TurnState.DRAWING) {
+            state.word = bookkeeping.currentWord.replace(/./g, "_ ");
             // we need to guess the word
         }
     }
+
+    wordChooserBS.next(state.wordsToChoose);
+    wordDisplayBS.next(state.word);
 };
 
 const addPlayer = (clientId) => {
@@ -114,6 +128,26 @@ window.onload = () => {
         if (bookkeeping.amITheHost) {
             removePlayer(evt.detail.clientId);
         }
+    });
+
+    wordChooserBS.subscribe({
+        next: (v) => {
+            console.log("word chooser bs subscriber -- ", v)
+            if (!v) {
+                document.querySelector("#wordchooser").classList.add("hidden");
+            } else {
+                console.log("yuh");
+                document.querySelector("#wordchooser").classList.remove("hidden");
+                document.querySelectorAll("#wordchooser > button").forEach((el, idx) => {
+                    el.innerHTML = bookkeeping.availableWords[idx];
+                    el.onclick = () => chooseAWord(bookkeeping.availableWords[idx]);
+                });
+            }
+        },
+    });
+
+    wordDisplayBS.subscribe({
+        next: (txt) => (document.querySelector("#worddisplay").innerHTML = txt),
     });
 };
 

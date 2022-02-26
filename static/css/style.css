@@ -13,3 +13,28 @@
   border-radius: 30px;
   margin-right: 10px;
 }
+
+#wordchooser {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  display: flex;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+}
+
+#worddisplay {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.hidden {
+  display: none !important;
+}
