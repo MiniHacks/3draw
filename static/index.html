@@ -88,6 +88,8 @@
             el.setAttribute('hand-controls', {hand: side});
             el.setAttribute('networked', {template: `#${side}-hand-template`, attachTemplateToLocal: false});
             el.setAttribute('id', `my-tracked-${side}-hand`);
+            el.setAttribute('thumbstick-logging', true);
+            
             // note that the ID will be applied to THIS client's hands,
             // but not other connected clients,
             // and not on the machine of other connected clients
