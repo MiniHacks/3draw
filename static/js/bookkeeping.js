@@ -18,7 +18,7 @@ let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
 // seed with actual full word list
 (async () => {
     let res = await fetch("/word_list.json");
-    wordList = await res.json();
+    wordList = (await res.json()).words;
 })();
 
 let bookkeeping = {
@@ -48,7 +48,7 @@ const setBookkeeping = (newValue) => {
         console.log("sent ", bookkeeping);
     }
 
-    let el = document.querySelector("#am-i-the-bookkeeper");
+    let el = document.querySelector("#am-i-the-host");
     if (el) {
         el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
             bookkeeping.timeRemaining
@@ -100,17 +100,24 @@ NAF.connection.subscribeToDataChannel("bookkeepingUpdates", function (senderId, 
 
 const chooseFromWordList = () => wordList[Math.floor(Math.random() * wordList.length)];
 
+const chooseNWords = (n) => {
+    let retSet = new Set();
+    while (retSet.size < n) {
+        retSet.add(chooseFromWordList());
+    }
+    return [...retSet.values()];
+}
+
 const startgame = () => {
     console.log("someone is trying to start the game!");
-    // 1. pick a word
-    const availableWords = [chooseFromWordList(), chooseFromWordList(), chooseFromWordList()];
-    bookkeeping.availableWords = availableWords;
+    // pick a word
+    bookkeeping.availableWords = chooseNWords(3);
 
-    // 3. change turn state
+    // change turn state
     bookkeeping.turnState = TurnState.CHOOSING;
     bookkeeping.gameState = GameState.PLAYING;
 
-    // 2. start timer
+    // start timer (networked)
     rxjs.timer(0, 1000)
         .pipe(
             rxjs.operators.take(bookkeeping.timeRemaining),
