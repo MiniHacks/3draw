@@ -21,7 +21,7 @@ AFRAME.registerComponent("tracked-vr-hands", {
                     teleportOrigin: "#local-avatar",
                 });
             } else if (side === "right") {
-                el.setAttribute("laser-controls", { hand: right });
+                el.setAttribute("laser-controls", { hand: "right" });
                 el.setAttribute("raycaster-listen", true);
             }
 
