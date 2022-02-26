@@ -110,7 +110,7 @@ const chooseNWords = (k) => {
     for (let i = 0; i < n; i++) {
         i = i + Math.floor(Math.log(Math.random()) / Math.log(1 - W)) + 1;
         if (i <= n) {
-            result[Math.floor(Math.random() * k)] = wordList[i];
+            result[Math.floor(Math.random() * k)] = wordList[i - 1];
             W = W * Math.exp(Math.log(Math.random()) / k);
         }
     }
