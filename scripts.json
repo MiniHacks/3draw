@@ -1,0 +1,14 @@
+{
+  "web": {
+    "path": "./",
+    "command": "yarn dev",
+    "install": "yarn",
+    "color": "purple"
+  },
+  "cloudflare": {
+    "path": "./",
+    "command": "cloudflared tunnel --no-autoupdate --url http://0.0.0.0:3001 --hostname $(NAME).3draw.live",
+    "install": "echo \"Make sure you have cloudflared installed\"",
+    "color": "orange"
+  }
+}
