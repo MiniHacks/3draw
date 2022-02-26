@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 
 const app = express();
 app.use(cors());
+app.use(express.static("static"))
 
 const server = http.createServer(app);
 
@@ -21,6 +22,7 @@ const PORT = parseInt(process.env.PORT || "3001");
 app.get("/", (req, res) => {
     res.send("hello world :)");
 });
+
 
 io.on("connection", (socket) => {
     console.log({ id: socket.id, event: "connection" });
