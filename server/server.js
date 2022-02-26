@@ -5,9 +5,9 @@ const express = require("express");
 const socketIo = require("socket.io");
 const easyrtc = require("open-easyrtc");
 process.title = "NAF-server";
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 const app = express();
-app.use(express.static(path.resolve(__dirname, "..", "examples")));
+app.use(express.static(path.resolve(__dirname, "..", "static")));
 
 // Serve and build the bundle in development.
 if (process.env.NODE_ENV === "development") {

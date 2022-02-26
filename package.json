@@ -32,6 +32,7 @@
     "ts-node": "^10.5.0"
   },
   "scripts": {
-    "start:dev": "nodemon backend/app.ts"
+    "start": "nodemon server/server.js",
+    "dev": "yarn start"
   }
 }
