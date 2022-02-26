@@ -3,7 +3,7 @@ AFRAME.registerComponent("thumbstick-logging", {
         this.el.addEventListener("thumbstickmoved", this.logThumbstick);
     },
     logThumbstick: function (event) {
-        const person = document.querySelector("#player");
+        const person = document.querySelector("#camera-rig");
         const { x, y, z } = person.getAttribute("position");
         if (event.detail.y > 0.8) {
             if (y > -20) {
