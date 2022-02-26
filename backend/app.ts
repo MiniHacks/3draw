@@ -14,7 +14,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: { origin: "*" },
-    path: "/express/socket.io",
+    path: "/socket.io",
 });
 
 const PORT = parseInt(process.env.PORT || "3001");

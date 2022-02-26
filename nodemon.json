@@ -1,0 +1,14 @@
+{
+  "restartable": "rs",
+  "verbose": true,
+  "execMap": {
+    "ts": "esr --cache"
+  },
+  "watch": [
+    "backend/"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "ts"
+}
