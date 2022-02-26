@@ -23,6 +23,7 @@ AFRAME.registerComponent("tracked-vr-hands", {
             } else if (side === "right") {
                 el.setAttribute("laser-controls", { hand: "right" });
                 el.setAttribute("raycaster-listen", true);
+                el.setAttribute("grab-release", true);
             }
 
             this.el.appendChild(el);
