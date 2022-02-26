@@ -48,7 +48,7 @@ const setBookkeeping = (newValue) => {
         console.log("sent ", bookkeeping);
     }
 
-    let el = document.querySelector("#am-i-the-bookkeeper");
+    let el = document.querySelector("#am-i-the-host");
     if (el) {
         el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
             bookkeeping.timeRemaining
