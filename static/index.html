@@ -12,7 +12,31 @@
     <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
-    <script src="js/speech-recognition.js"></script>
+    <!-- <script src="js/speech-recognition.js"></script> -->
+    <script>
+console.log(window.SpeechRecognition);
+
+const SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+//const SpeechGrammarList = window.SpeechRecognitionGrammarList;
+
+const recognition = new SpeechRecognition();
+//const speechRecognitionList = new SpeechGrammarList();
+
+recognition.lang = "en-US";
+recognition.continuous = true;
+//recognition.interimResults = true; // half-baked answers are best
+recognition.maxAlternatives = 1;
+
+recognition.start();
+console.log("Initiated recognition.");
+
+recognition.onresult = (e) => {
+    console.log(e.results[e.results.length-1][0].transcript);
+    console.log(e);
+};
+
+
+    </script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 </head>
 <body>
