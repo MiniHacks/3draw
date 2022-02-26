@@ -14,9 +14,12 @@
           [ yarn2nix ] ++
           # editor configuration
           (with nodePackages;
-            [ vscode-css-languageserver-bin vscode-html-languageserver-bin ]) ++
+            [
+              vscode-css-languageserver-bin vscode-html-languageserver-bin
+              typescript-language-server
+            ]) ++
           # packagesActual
-          [ cloudflared yarn ]);
+          [ cloudflared yarn python39 ]);
       };
     });
 }
