@@ -63,10 +63,11 @@
                     </a-entity>
                 </template>
             </a-assets>
-            <a-entity oculus-touch-controls="hand: left"></a-entity>
-            <a-entity oculus-touch-controls="hand: right"></a-entity>
-            <a-entity id="teleHand" hand-controls="hand: left" teleport-controls></a-entity>
-            <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+            <a-entity
+                oculus-touch-controls="hand: left"
+                id="teleHand"
+                teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+            <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
             <a-entity
                 id="player"
                 networked="template:#avatar-template;attachTemplateToLocal:false;"

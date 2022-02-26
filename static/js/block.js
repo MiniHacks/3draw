@@ -5,7 +5,7 @@ AFRAME.registerComponent("scale-on-mouseenter", {
     },
 
     init: function () {
-        console.log("Hello there!");
+        console.log("Hello there! General Kenobi");
         var data = this.data;
         var el = this.el;
         this.el.addEventListener("mouseenter", function () {

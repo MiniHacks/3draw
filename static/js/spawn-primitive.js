@@ -3,7 +3,7 @@ AFRAME.registerComponent("spawn-primitive", {
     // Init lifecycle method fires upon initialization of component.
     init: function () {
         let self = this;
-        console.log("spawn-primitive loads! hooray");
+        console.log("spawn-primitive loads!");
 
         self.el.addEventListener("click", function (e) {
             // point clicked (intersection point)
