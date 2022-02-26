@@ -13,6 +13,7 @@
         <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
         <script src="js/joystick-levitation.js"></script>
         <script src="js/spawn-primitive.js"></script>
+        <script src="js/spawn-oculus.js"></script>
         <script src="js/spawn-in-circle.component.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/style.css" />
     </head>
@@ -72,7 +73,7 @@
                     spawn-in-circle="radius:3"
                     wasd-controls
                     look-controls>
-                    <a-cursor></a-cursor>
+                    <a-cursor spawn-oculus></a-cursor>
                     <a-sphere class="head" visible="false" random-color></a-sphere>
                 </a-entity>
                 <a-entity
@@ -80,17 +81,18 @@
                     id="teleHand"
                     joystick-levitation
                     teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
-                <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
+                <a-entity oculus-touch-controls="hand: right" id="blockHand" spawn-oculus laser-controls>
+                </a-entity>
             </a-entity>
 
-            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"> </a-box>
+            <a-box id="boxy" color="green" depth="1" height="1" width="1" position="0 1 -5"> </a-box>
 
-            <!-- TODO - delete spawn-primitive once a way to spawn out4side of plane is found -->
+            <!-- TODO - delete spawn-primitive once a way to spawn outside of plane is found -->
             <a-entity
+                id="plane"
                 position="0 0 0"
                 geometry="primitive: plane; width: 10000; height: 10000;"
                 rotation="-90 0 0"
-                spawn-primitive
                 material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
             <a-entity light="color: #ccccff; intensity: 1; type: ambient;" visible=""></a-entity>
             <a-entity light="color: #ffaaff; intensity: 1.5" position="5 5 5"></a-entity>
