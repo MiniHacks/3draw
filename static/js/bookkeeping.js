@@ -100,21 +100,22 @@ NAF.connection.subscribeToDataChannel("bookkeepingUpdates", function (senderId, 
 
 const chooseNWords = (k) => {
     const result = Array(k);
-    Array(k).forEach((i) => {
+    [...Array(k).keys()].forEach((i) => {
         result[i] = wordList[i];
     });
 
     let W = Math.exp(Math.log(Math.random()) / k);
 
     const n = wordList.length;
-    for (let i = 0; i < n; i++) { 
+    for (let i = 0; i < n; i++) {
         i = i + Math.floor(Math.log(Math.random()) / Math.log(1 - W)) + 1;
         if (i <= n) {
             result[Math.floor(Math.random() * k)] = wordList[i];
             W = W * Math.exp(Math.log(Math.random()) / k);
         }
     }
-}
+    return result;
+};
 
 const startgame = () => {
     console.log("someone is trying to start the game!");
