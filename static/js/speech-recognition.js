@@ -21,7 +21,7 @@ console.log("Initiated recognition.");
 recognition.onresult = (e) => {
     const transcripts = Array.from(e.results);
     // list of strings with most recent transcriptions
-    const most_recent_results = Array.from(transcripts[transcripts.length-1]);
+    const most_recent_results = Array.from(transcripts[transcripts.length - 1]);
     most_recent_results.forEach((el) =>
         // TODO: more things here
         console.log(el.transcript)
