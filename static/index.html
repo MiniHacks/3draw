@@ -12,6 +12,7 @@
         <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
         <script src="js/block.js"></script>
+        <script src="js/spawn-primitive.js"></script>
         <script src="js/spawn-in-circle.component.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/style.css" />
     </head>
@@ -77,15 +78,17 @@
                 depth="1"
                 height="1"
                 width="1"
-                position="2 2 2"
+                position="0 1 -5"
                 scale-on-mouseenter>
             </a-box>
 
             <a-camera><a-cursor></a-cursor></a-camera>
+            <!-- TODO - delete spawn-primitive once a way to spawn outside of plane is found -->
             <a-entity
                 position="0 0 0"
                 geometry="primitive: plane; width: 10000; height: 10000;"
                 rotation="-90 0 0"
+                spawn-primitive
                 material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
             <a-entity light="color: #ccccff; intensity: 1; type: ambient;" visible=""></a-entity>
             <a-entity light="color: #ffaaff; intensity: 1.5" position="5 5 5"></a-entity>
