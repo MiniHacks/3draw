@@ -34,7 +34,7 @@
     <script src="js/tracked-hands.js"></script>
     <script src="js/player-info.js"></script>
     <script src="js/joystick-levitation.js"></script>
-    <script src="js/spawn-oculus.js"></script>
+    <script src="js/raycaster-listen.js"></script>
     <script src="js/spawn-primitive.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
     <script src="js/teleport-controller.js"></script>
@@ -68,7 +68,7 @@
         <template id="camera-rig-template">
             <a-entity></a-entity>
         </template>
-        
+
         <template id="head-template">
             <a-entity class="avatar" player-info>
                 <a-sphere class="head" scale="0.2 0.22 0.2"></a-sphere>
@@ -105,6 +105,7 @@
 
     <!-- TODO - delete spawn-primitive once a way to spawn out4side of plane is found -->
     <a-entity
+            id="plane"
             position="0 0 0"
             geometry="primitive: plane; width: 10000; height: 10000;"
             rotation="-90 0 0"
@@ -123,7 +124,6 @@
         </a-entity>
     </a-entity>
 
-<<<<<<< HEAD
     <a-sky src="#sky" rotation="0 -90 0"></a-sky>
     <a-entity id="particles" particle-system="preset: snow"></a-entity>
 </a-scene>

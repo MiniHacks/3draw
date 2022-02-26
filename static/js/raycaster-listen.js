@@ -1,12 +1,9 @@
+/* eslint-disable no-undef */
 AFRAME.registerComponent("raycaster-listen", {
-    init: function () {
+    init: function (data) {
         const plane = document.querySelector("#plane");
-        const camera = document.querySelector("#camera");
         plane.addEventListener("raycaster-intersected", (evt) => {
             // console.log(Object.values(evt.detail.el));
-            if (evt.detail.el === camera) {
-                return;
-            }
             this.raycaster = evt.detail.el;
         });
         plane.addEventListener("raycaster-intersected-cleared", (evt) => {
