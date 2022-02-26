@@ -11,34 +11,18 @@
 
         <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
-        <!-- <script src="js/block.js"></script> -->
-        <script src="/js/spawn-in-circle.component.js"></script>
-        <script>
-            AFRAME.registerComponent("scale-on-mouseenter", {
-                schema: {
-                    to: { default: "2.5 2.5 2.5", type: "vec3" },
-                },
-
-                init: function () {
-                    console.log("Hello there!");
-                    var data = this.data;
-                    var el = this.el;
-                    this.el.addEventListener("click", function () {
-                        el.object3D.scale.copy(data.to);
-                    });
-                },
-            });
-        </script>
+        <script src="js/block.js"></script>
+        <script src="js/spawn-in-circle.component.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/style.css" />
     </head>
     <body>
         <a-scene
             networked-scene="
-      room: basic-audio;
-      debug: true;
-      adapter: easyrtc;
-      audio: true;
-    ">
+            room: basic-audio;
+            debug: true;
+            adapter: easyrtc;
+            audio: true;
+        ">
             <a-assets>
                 <img
                     id="grid"
@@ -87,8 +71,16 @@
                 look-controls>
                 <a-sphere class="head" visible="false" random-color></a-sphere>
             </a-entity>
-            <a-box color="tomato" depth="1" height="1" width="1" position="2 2 2" scale-on-mouseenter>
+
+            <a-box
+                color="tomato"
+                depth="1"
+                height="1"
+                width="1"
+                position="2 2 2"
+                scale-on-mouseenter>
             </a-box>
+
             <a-camera><a-cursor></a-cursor></a-camera>
             <a-entity
                 position="0 0 0"
