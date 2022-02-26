@@ -2,7 +2,7 @@ AFRAME.registerComponent("spawn-oculus", {
     init: function () {
         const self = this;
         console.log("Listening for oculus spawns!");
-        this.el.addEventListener("click", function (event) {
+        this.el.addEventListener("gripdown", function (event) {
             // console.log(event);
             // const box = document.querySelector("#boxy");
             // box.setAttribute("material", "color", "yellow");
