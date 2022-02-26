@@ -10,8 +10,8 @@ const GameState = {
     FINISHED: "finished",
 };
 
-Object.seal(TurnState);
-Object.seal(GameState);
+Object.freeze(TurnState);
+Object.freeze(GameState);
 
 let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
 
