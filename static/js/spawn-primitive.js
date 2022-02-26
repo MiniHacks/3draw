@@ -14,6 +14,7 @@ AFRAME.registerComponent("spawn-primitive", {
 
             // puts the box at the point clicked
             entity.setAttribute("position", e.detail.intersection.point);
+            entity.setAttribute("networked", "template:#box-template");
 
             // adds the box to the scene
             self.el.sceneEl.appendChild(entity);
