@@ -73,7 +73,7 @@
                     spawn-in-circle="radius:3"
                     wasd-controls
                     look-controls>
-                    <a-cursor spawn-oculus></a-cursor>
+                    <a-cursor></a-cursor>
                     <a-sphere class="head" visible="false" random-color></a-sphere>
                 </a-entity>
                 <a-entity
@@ -81,7 +81,11 @@
                     id="teleHand"
                     joystick-levitation
                     teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
-                <a-entity oculus-touch-controls="hand: right" id="blockHand" raycaster-listen laser-controls="hand: right">
+                <a-entity
+                    oculus-touch-controls="hand: right"
+                    id="blockHand"
+                    raycaster-listen
+                    laser-controls="hand: right">
                 </a-entity>
             </a-entity>
 

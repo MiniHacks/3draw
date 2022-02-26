@@ -24,6 +24,8 @@ AFRAME.registerComponent("raycaster-listen", {
         } // checks for null
         const plane = document.querySelector("#plane");
 
+        console.log(this.raycaster);
+
         let intersection = this.raycaster.components.raycaster.getIntersection(plane);
         if (!intersection) {
             this.intersectionPoint = null;
