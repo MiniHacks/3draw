@@ -28,6 +28,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.4/rxjs.umd.js"></script>
     <!--    <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
     <script src="js/block.js"></script>
@@ -38,6 +39,7 @@
     <script src="js/spawn-primitive.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
     <script src="js/teleport-controller.js"></script>
+    <script src="js/bookkeeping.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 </head>
 <body>
@@ -128,9 +130,22 @@
     <a-entity id="particles" particle-system="preset: snow"></a-entity>
 </a-scene>
 
-<div class="actions">
-    <button id="mic-btn" type="button" class="button">Mute Mic</button>
+<div id="wordchooser" class="hidden">
+    <button type="button" class="button"></button>
+    <button type="button" class="button"></button>
+    <button type="button" class="button"></button>
 </div>
+
+<div id="worddisplay"></div>
+
+<div class="actions">
+  <button id="mic-btn" type="button" class="button">Mute Mic</button>
+  <p style="color: white;">am i the bookkeeper? <span id="am-i-the-host">yes</span></p>
+  <p style="color: white;">who am i <span id="whoami"></span></p>
+  <button id="start-game" type="button" class="button" onclick="startgame()">start a game</button>
+  <button id="start-game" type="button" class="button" onclick="chooseAWord('hi')">choose a word</button>
+</div>
+
 <script>
     document.body.addEventListener('connected', function (evt) {
       console.error('connected event. clientId =', evt.detail.clientId);
