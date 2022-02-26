@@ -21,6 +21,11 @@ let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
     wordList = (await res.json()).words;
 })();
 
+const CHOOSING_TIME = 15;
+const DRAWING_TIME = 150;
+
+let hostId = null;
+
 let bookkeeping = {
     currentWord: "",
     availableWords: [],
@@ -35,13 +40,19 @@ let bookkeeping = {
     hostSince: Date.now(),
 };
 
+const DataChannel = {
+    BOOKKEEPING_UPDATES: "bookkeepingUpdates",
+    CHOSE_WORD: "choseWord",
+};
+Object.freeze(DataChannel);
+
 const setBookkeeping = (newValue) => {
     // FIXME: makes it difficult to change the host in the middle of the game
     newValue.amITheHost = bookkeeping.amITheHost;
 
     bookkeeping = newValue;
     if (bookkeeping.amITheHost) {
-        NAF.connection.broadcastDataGuaranteed("bookkeepingUpdates", {
+        NAF.connection.broadcastDataGuaranteed(DataChannel.BOOKKEEPING_UPDATES, {
             youAreNotTheHost: [true, bookkeeping.hostSince],
             bookkeeping,
         });
@@ -81,22 +92,26 @@ window.onload = () => {
     });
 };
 
-NAF.connection.subscribeToDataChannel("bookkeepingUpdates", function (senderId, dataType, data, targetId) {
-    if (
-        !bookkeeping.amITheHost ||
-        (data.youAreNotTheHost[0] && data.youAreNotTheHost[1] < bookkeeping.hostSince)
-    ) {
-        // i am not the host!
-        console.log("i am not the host");
-        bookkeeping.amITheHost = false;
-        setBookkeeping(data.bookkeeping);
-    } else {
-        // stupid client trying to tell us that we are not the host
-        // even though we are
-        console.log("should not fire often");
-        console.log(data.youAreNotTheHost, bookkeeping.hostSince);
+NAF.connection.subscribeToDataChannel(
+    DataChannel.BOOKKEEPING_UPDATES,
+    function (senderId, dataType, data, targetId) {
+        if (
+            !bookkeeping.amITheHost ||
+            (data.youAreNotTheHost[0] && data.youAreNotTheHost[1] < bookkeeping.hostSince)
+        ) {
+            // i am not the host!
+            console.log("i am not the host");
+            bookkeeping.amITheHost = false;
+            hostId = senderId;
+            setBookkeeping(data.bookkeeping);
+        } else {
+            // stupid client trying to tell us that we are not the host
+            // even though we are
+            console.log("should not fire often");
+            console.log(data.youAreNotTheHost, bookkeeping.hostSince);
+        }
     }
-});
+);
 
 const chooseFromWordList = () => wordList[Math.floor(Math.random() * wordList.length)];
 
@@ -106,25 +121,52 @@ const chooseNWords = (n) => {
         retSet.add(chooseFromWordList());
     }
     return [...retSet.values()];
-}
+};
 
-const startgame = () => {
+const chooseAWord = (word) => {
+    NAF.connection.sendDataGuaranteed(hostId, DataChannel.CHOSE_WORD, { chosenWord: word });
+};
+
+const startgame = async () => {
     console.log("someone is trying to start the game!");
-    // pick a word
-    bookkeeping.availableWords = chooseNWords(3);
+
+    const choosableWords = chooseNWords(3);
+    // tell person to pick a word
+    bookkeeping.availableWords = choosableWords;
 
     // change turn state
-    bookkeeping.turnState = TurnState.CHOOSING;
     bookkeeping.gameState = GameState.PLAYING;
+    bookkeeping.turnState = TurnState.CHOOSING;
+    bookkeeping.timeRemaining = CHOOSING_TIME;
+
+    const waitForWordChoiceReply = new rxjs.Observable((observer) => {
+        NAF.connection.subscribeToDataChannel(
+            DataChannel.CHOSE_WORD,
+            (senderId, dataType, data, targetId) => {
+                observer.next(data);
+                observer.complete();
+
+                NAF.connection.unsubscribeToDataChannel(DataChannel.CHOSE_WORD);
+            }
+        );
+    });
 
     // start timer (networked)
-    rxjs.timer(0, 1000)
-        .pipe(
-            rxjs.operators.take(bookkeeping.timeRemaining),
-            rxjs.operators.tap((secondsElapsed) => {
-                bookkeeping.timeRemaining -= 1;
-                setBookkeeping(bookkeeping);
-            })
+    const { chosenWord } = await rxjs.lastValueFrom(
+        rxjs.race(
+            // If they exceed the time limit, then pick the first word for them
+            rxjs.timer(0, 1000).pipe(
+                rxjs.operators.take(bookkeeping.timeRemaining),
+                rxjs.operators.tap((secondsElapsed) => {
+                    bookkeeping.timeRemaining -= 1;
+                    setBookkeeping(bookkeeping);
+                }),
+                rxjs.operators.last(),
+                rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
+            ),
+            waitForWordChoiceReply
         )
-        .subscribe();
+    );
+
+    console.log("the chosen word was ", chosenWord)
 };
