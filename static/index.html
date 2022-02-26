@@ -1,8 +1,8 @@
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>3Draw</title>
-    <meta name="description" content="3Draw | Draw with friends in real-time!">
+    <head>
+        <meta charset="utf-8" />
+        <title>3Draw</title>
+        <meta name="description" content="3Draw | Draw with friends in real-time!" />
 
         <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
@@ -11,8 +11,7 @@
         <script src="/dist/networked-aframe.js"></script>
         <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
-        <script src="js/block.js"></script>
-        <script src="js/joystick-controls.js"></script>
+        <script src="js/joystick-levitation.js"></script>
         <script src="js/spawn-primitive.js"></script>
         <script src="js/spawn-in-circle.component.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/style.css" />
@@ -79,13 +78,12 @@
                 <a-entity
                     oculus-touch-controls="hand: left"
                     id="teleHand"
-                    thumbstick-logging
+                    joystick-levitation
                     teleport-controls="type: parabolic; button: trigger; curveShootingSpeed: 10; cameraRig: #player; teleportOrigin: #head;"></a-entity>
                 <a-entity oculus-touch-controls="hand: right" id="blockHand" laser-controls></a-entity>
             </a-entity>
 
-            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
-            </a-box>
+            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"> </a-box>
 
             <!-- TODO - delete spawn-primitive once a way to spawn out4side of plane is found -->
             <a-entity
