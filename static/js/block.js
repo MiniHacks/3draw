@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 AFRAME.registerComponent("scale-on-mouseenter", {
     schema: {
         to: { default: "2.5 2.5 2.5", type: "vec3" },
