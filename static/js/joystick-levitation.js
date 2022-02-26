@@ -1,4 +1,4 @@
-AFRAME.registerComponent("thumbstick-logging", {
+AFRAME.registerComponent("joystick-levitation", {
     init: function () {
         this.el.addEventListener("thumbstickmoved", this.logThumbstick);
     },

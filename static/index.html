@@ -33,7 +33,8 @@
     <script src="js/block.js"></script>
     <script src="js/tracked-hands.js"></script>
     <script src="js/player-info.js"></script>
-    <script src="js/joystick-controls.js"></script>
+    <script src="js/joystick-levitation.js"></script>
+    <script src="js/spawn-oculus.js"></script>
     <script src="js/spawn-primitive.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
     <script src="js/teleport-controller.js"></script>
@@ -67,8 +68,7 @@
         <template id="camera-rig-template">
             <a-entity></a-entity>
         </template>
-
-
+        
         <template id="head-template">
             <a-entity class="avatar" player-info>
                 <a-sphere class="head" scale="0.2 0.22 0.2"></a-sphere>
@@ -84,7 +84,6 @@
                         scale=".5 .5 .5"></a-text>
             </a-entity>
         </template>
-
         <!-- Hands -->
         <template id="left-hand-template">
             <a-entity>
@@ -99,7 +98,7 @@
         </template>
 
     </a-assets>
-    <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
+    <a-box color="green" depth="1" height="1" width="1" position="0 1 -5">
     </a-box>
     <a-entity environment="preset:starry; groundColor: #000000;"></a-entity>
     <a-entity light="type:ambient; intensity:.5"></a-entity>
@@ -124,6 +123,7 @@
         </a-entity>
     </a-entity>
 
+<<<<<<< HEAD
     <a-sky src="#sky" rotation="0 -90 0"></a-sky>
     <a-entity id="particles" particle-system="preset: snow"></a-entity>
 </a-scene>
@@ -131,19 +131,38 @@
 <div class="actions">
     <button id="mic-btn" type="button" class="button">Mute Mic</button>
 </div>
-
 <script>
-  let micEnabled = true;
-  const micBtnEle = document.getElementById("mic-btn");
-  function onConnect() {
-    console.log("onConnect", new Date());
-
-    micBtnEle.addEventListener("click", function () {
-      NAF.connection.adapter.enableMicrophone(!micEnabled);
-      micEnabled = !micEnabled;
-      micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+    document.body.addEventListener('connected', function (evt) {
+      console.error('connected event. clientId =', evt.detail.clientId);
     });
-  }
+
+    document.body.addEventListener('clientConnected', function (evt) {
+      console.error('clientConnected event. clientId =', evt.detail.clientId);
+    });
+
+    document.body.addEventListener('clientDisconnected', function (evt) {
+      console.error('clientDisconnected event. clientId =', evt.detail.clientId);
+    });
+
+    document.body.addEventListener('entityCreated', function (evt) {
+      console.error('entityCreated event', evt.detail.el);
+    });
+
+    document.body.addEventListener('entityRemoved', function(evt) {
+      console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
+    });
+
+    let micEnabled = true;
+    const micBtnEle = document.getElementById("mic-btn");
+    function onConnect() {
+        console.log("onConnect", new Date());
+
+        micBtnEle.addEventListener("click", function () {
+        NAF.connection.adapter.enableMicrophone(!micEnabled);
+        micEnabled = !micEnabled;
+        micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+    });
+}
 </script>
 </body>
 </html>

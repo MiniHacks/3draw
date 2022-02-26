@@ -12,7 +12,7 @@ AFRAME.registerComponent("tracked-vr-hands", {
             });
             el.setAttribute("id", `my-tracked-${side}-hand`);
             if (side === "left") {
-                el.setAttribute("thumbstick-logging", true);
+                el.setAttribute("joystick-levitation", true);
                 el.setAttribute("teleport-controls", {
                     type: "parabolic",
                     button: "trigger",
@@ -20,6 +20,9 @@ AFRAME.registerComponent("tracked-vr-hands", {
                     cameraRig: "#camera-rig",
                     teleportOrigin: "#local-avatar",
                 });
+            } else if (side === "right") {
+                el.setAttribute("laser-controls", { hand: right });
+                el.setAttribute("raycaster-listen", true);
             }
 
             this.el.appendChild(el);
