@@ -11,6 +11,7 @@
 
     <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
+    <script src="js/bookkeeping.component.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
     <script src="js/speech-recognition.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
@@ -73,6 +74,11 @@
         ></a-sphere>
     </a-entity>
 
+    <a-entity
+      id="bookkeeper-component" 
+      bookkeeping=""
+    ></a-entity>
+
     <a-entity position="0 0 0"
               geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
               material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
@@ -85,6 +91,7 @@
 
 <div class="actions">
     <button id="mic-btn" type="button" class="button">Mute Mic</button>
+    <button id="change-bookkeeping" type="button" class="button">change the bookkeeper-component</button>
 </div>
 
 <script>
@@ -102,6 +109,13 @@
       }
     ]
   });
+
+  let counter = 0;
+
+  document.getElementById("change-bookkeeping").onclick = (ev) => {
+    const bookkeeperEntity = document.querySelector("#bookkeeper-component");
+    // bookkeeperEntity.setAttribute('bookkeeping', 'banana', counter++);
+  }
 
   function onConnect() {
     console.log("onConnect", new Date());
