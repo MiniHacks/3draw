@@ -18,12 +18,19 @@ recognition.maxAlternatives = 3; // could up this and parse all to be friendlier
 recognition.start();
 console.log("Initiated recognition.");
 
+const checkForWord = (phrase, answer) => phrase.includes(answer);
+
 recognition.onresult = (e) => {
+    const target_word = "test";
+
     const transcripts = Array.from(e.results);
     // list of strings with most recent transcriptions
     const most_recent_results = Array.from(transcripts[transcripts.length - 1]);
-    most_recent_results.forEach((el) =>
+    most_recent_results.forEach((el) => {
         // TODO: more things here
-        console.log(el.transcript)
-    );
+        // console.log(el.transcript)
+        if (checkForWord(el.transcript, target_word)) {
+            console.log(`Found ${target_word} in ${el.transcript}`);
+        }
+    });
 };
