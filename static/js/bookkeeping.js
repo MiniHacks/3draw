@@ -64,8 +64,9 @@ const setBookkeeping = (newValue) => {
 
     let el = document.querySelector("#am-i-the-host");
     if (el) {
-        el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${bookkeeping.timeRemaining
-            } ${bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""}`;
+        el.innerHTML = `${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
+            bookkeeping.timeRemaining
+        } ${bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""}`;
     }
 };
 
