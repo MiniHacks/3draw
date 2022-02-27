@@ -1,0 +1,45 @@
+@import url(https://fonts.googleapis.com/css?family=Alfa+Slab+One);
+
+.roomHeader {
+    color: orange;
+}
+
+#navBrand {
+    font-size: 30px;
+}
+
+.bgImage {
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 80%;
+}
+
+.center-title {
+    font-family: "Alfa Slab One";
+    font-size: 100px;
+    top: 150px;
+    position: absolute;
+    z-index: 1;
+    color: orange;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: white;
+}
+
+.center-details {
+    font-size: 20px;
+    top: 300px;
+    position: absolute;
+    z-index: 1;
+}
+
+.header-row {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.form-col {
+    text-align: center;
+}
