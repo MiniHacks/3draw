@@ -23,6 +23,8 @@ let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
 
 const CHOOSING_TIME = 15;
 const DRAWING_TIME = 150;
+const SHORT_BREAK_TIME = 5;
+const LONG_BREAK_TIME = 15;
 
 let ourNetworkId = null;
 let hostId = null;
@@ -65,11 +67,35 @@ const setBookkeeping = (newValue) => {
 
     updateState();
 
+    let describeGameState;
+    switch (bookkeeping.gameState) {
+        case GameState.FINISHED:
+            describeGameState = "game over!";
+            break;
+        case GameState.STARTING:
+            describeGameState = "starting";
+            break;
+        case GameState.BREAK:
+            describeGameState = "intermission";
+            break;
+        case GameState.PLAYING:
+            describeGameState = `round ${bookkeeping.currentRoundNumber}/${bookkeeping.totalNumberOfRounds} --`;
+            switch (bookkeeping.turnState) {
+                case TurnState.CHOOSING:
+                    describeGameState += "choosing word";
+                    break;
+                case TurnState.DRAWING:
+                    describeGameState += "guessing word";
+                    break;
+            }
+    }
     let el = document.querySelector("#am-i-the-host");
     if (el) {
-        el.innerHTML = ` ${bookkeeping.amITheHost ? "yes" : "no!"} -- timer remaining: ${
+        el.innerHTML = ` ${bookkeeping.amITheHost ? "(host!)" : ""} -- timer remaining: ${
             bookkeeping.timeRemaining
-        } ${bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""}`;
+        } (${describeGameState}) ${
+            bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""
+        }`;
     }
 };
 
@@ -132,7 +158,7 @@ window.onload = () => {
 
     wordChooserBS.subscribe({
         next: (v) => {
-            console.log("word chooser bs subscriber -- ", v)
+            console.log("word chooser bs subscriber -- ", v);
             if (!v) {
                 document.querySelector("#wordchooser").classList.add("hidden");
             } else {
@@ -163,6 +189,7 @@ NAF.connection.subscribeToDataChannel(
             bookkeeping.amITheHost = false;
             hostId = senderId;
             setBookkeeping(data.bookkeeping);
+            hideStartGameBtn();
         } else {
             // stupid client trying to tell us that we are not the host
             // even though we are
@@ -188,12 +215,18 @@ const chooseNWords = (k) => {
             W = W * Math.exp(Math.log(Math.random()) / k);
         }
     }
- 
+
     return result;
 };
 
+const hostWordChooserSubject = new rxjs.Subject();
+
 const chooseAWord = (word) => {
-    NAF.connection.sendDataGuaranteed(hostId, DataChannel.CHOSE_WORD, { chosenWord: word });
+    if (bookkeeping.amITheHost) {
+        hostWordChooserSubject.next({ chosenWord: word });
+    } else {
+        NAF.connection.sendDataGuaranteed(hostId, DataChannel.CHOSE_WORD, { chosenWord: word });
+    }
 };
 
 const countDownFromTimeRemaining = () =>
@@ -205,49 +238,95 @@ const countDownFromTimeRemaining = () =>
         })
     );
 
-const startgame = async () => {
+
+const rungame = async () => {
+    hideStartGameBtn();
+
     console.log("someone is trying to start the game!");
+    for (
+        bookkeeping.currentRoundNumber = 0;
+        bookkeeping.currentRoundNumber < bookkeeping.totalNumberOfRounds;
+        bookkeeping.currentRoundNumber += 1
+    ) {
+        for (
+            bookkeeping.currentPlayerInTurn = 0;
+            bookkeeping.currentPlayerInTurn < bookkeeping.turnOrder.length;
+            bookkeeping.currentPlayerInTurn += 1
+        ) {
+            bookkeeping.currentWord = "";
+            bookkeeping.availableWords = null;
+            bookkeeping.timeRemaining = SHORT_BREAK_TIME;
+            bookkeeping.gameState = GameState.BREAK;
+            await rxjs.lastValueFrom(countDownFromTimeRemaining());
 
-    const choosableWords = chooseNWords(3);
-    // tell person to pick a word
-    bookkeeping.availableWords = choosableWords;
+            //// PHASE 1: Choose word ////
+            const choosableWords = chooseNWords(3);
+            // tell person to pick a word
+            bookkeeping.availableWords = choosableWords;
 
-    // change turn state
-    bookkeeping.gameState = GameState.PLAYING;
-    bookkeeping.turnState = TurnState.CHOOSING;
-    bookkeeping.timeRemaining = CHOOSING_TIME;
+            // change turn state
+            bookkeeping.gameState = GameState.PLAYING;
+            bookkeeping.turnState = TurnState.CHOOSING;
+            bookkeeping.timeRemaining = CHOOSING_TIME;
 
-    const waitForWordChoiceReply = new rxjs.Observable((observer) => {
-        NAF.connection.subscribeToDataChannel(
-            DataChannel.CHOSE_WORD,
-            (senderId, dataType, data, targetId) => {
-                observer.next(data);
-                observer.complete();
+            const waitForWordChoiceReply = new rxjs.Observable((observer) => {
+                NAF.connection.subscribeToDataChannel(
+                    DataChannel.CHOSE_WORD,
+                    (senderId, dataType, data, targetId) => {
+                        observer.next(data);
+                        observer.complete();
 
-                NAF.connection.unsubscribeToDataChannel(DataChannel.CHOSE_WORD);
-            }
-        );
-    });
+                        NAF.connection.unsubscribeToDataChannel(DataChannel.CHOSE_WORD);
+                    }
+                );
+            });
 
-    // start timer for choosing a word (networked)
-    const { chosenWord } = await rxjs.lastValueFrom(
-        rxjs.race(
-            // If they exceed the time limit, then pick the first word for them
-            countDownFromTimeRemaining().pipe(
-                rxjs.operators.last(),
-                rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
-            ),
-            waitForWordChoiceReply
-        )
-    );
+            // start timer for choosing a word (networked)
+            const { chosenWord } = await rxjs.lastValueFrom(
+                rxjs.race(
+                    // If they exceed the time limit, then pick the first word for them
+                    countDownFromTimeRemaining().pipe(
+                        rxjs.operators.last(),
+                        rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
+                    ),
+                    waitForWordChoiceReply,
+                    hostWordChooserSubject.pipe(rxjs.operators.first())
+                )
+            );
 
-    // now we have chosen a word
-    console.log("the chosen word was ", chosenWord);
+            // now we have chosen a word
+            console.log("the chosen word was ", chosenWord);
 
-    // move to next phase
-    bookkeeping.currentWord = chosenWord;
-    bookkeeping.timeRemaining = DRAWING_TIME;
-    bookkeeping.turnState = TurnState.DRAWING;
+            //// PHASE 2: Guessing ////
+            bookkeeping.currentWord = chosenWord;
+            bookkeeping.timeRemaining = DRAWING_TIME;
+            bookkeeping.turnState = TurnState.DRAWING;
 
-    countDownFromTimeRemaining().subscribe();
+            await rxjs.lastValueFrom(countDownFromTimeRemaining());
+
+            // TODO: assign points or something?
+        }
+        bookkeeping.currentWord = "";
+        bookkeeping.availableWords = null;
+        bookkeeping.timeRemaining = LONG_BREAK_TIME;
+        bookkeeping.gameState = GameState.BREAK;
+        await rxjs.lastValueFrom(countDownFromTimeRemaining());
+    }
+    bookkeeping.currentWord = "";
+    bookkeeping.availableWords = null;
+    bookkeeping.timeRemaining = LONG_BREAK_TIME;
+    bookkeeping.gameState = GameState.FINISHED;
+    setBookkeeping(bookkeeping);
+
+    showStartGameBtn();
 };
+
+const hideStartGameBtn = () => {
+    document.querySelector("#start-game").classList.add("hidden");
+    document.querySelector("#start-game").setAttribute("disabled", "true");
+}
+
+const showStartGameBtn = () => {
+    document.querySelector("#start-game").classList.remove("hidden");
+    document.querySelector("#start-game").setAttribute("disabled", "false");
+}
