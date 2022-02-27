@@ -1,5 +1,4 @@
 <html lang="en">
-<<<<<<< HEAD
 <head>
     <meta charset="utf-8"/>
     <title>3Draw | Draw with friends in real-time!</title>
@@ -269,49 +268,3 @@
 </script>
 </body>
 </html>
-
-<script>
-  console.log(bookkeeping);
-  const hostind = document.querySelector("#hostindicator");
-  console.log(hostind)
-  hostind.setAttribute("text", "value: NOT HOST")
-  console.log(hostind)
-  document.body.addEventListener('connected', function (evt) {
-    console.error('connected event. clientId =', evt.detail.clientId);
-  });
-
-  document.body.addEventListener('clientConnected', function (evt) {
-    console.error('clientConnected event. clientId =', evt.detail.clientId);
-  });
-
-  document.body.addEventListener('clientDisconnected', function (evt) {
-    console.error('clientDisconnected event. clientId =', evt.detail.clientId);
-  });
-
-  document.body.addEventListener('entityCreated', function (evt) {
-    console.error('entityCreated event', evt.detail.el);
-  });
-
-  document.body.addEventListener('entityRemoved', function (evt) {
-    console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
-  });
-
-  let micEnabled = true;
-  const micBtnEle = document.getElementById("mic-btn");
-
-  function onConnect() {
-    console.log("onConnect", new Date());
-
-    micBtnEle.addEventListener("click", function () {
-      NAF.connection.adapter.enableMicrophone(!micEnabled);
-      micEnabled = !micEnabled;
-      micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
-    });
-  }
-
-  document.addEventListener("keypress", evt => {
-    if (evt.key === "Escape")
-      NAF.connection.broadcastDataGuaranteed("clear", true)
-    else console.log(evt);
-  })
-</script>
