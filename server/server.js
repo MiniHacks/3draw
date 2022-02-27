@@ -4,10 +4,15 @@ const path = require("path");
 const express = require("express");
 const socketIo = require("socket.io");
 const easyrtc = require("open-easyrtc");
+const grinkus = require("@google-cloud/speech");
+
 process.title = "NAF-server";
 const port = process.env.PORT || 3001;
 const app = express();
 app.use(express.static(path.resolve(__dirname, "..", "static")));
+//app.use(express.json({ limit: "100mb" }));
+
+app.use(express.json());
 
 // Serve and build the bundle in development.
 if (process.env.NODE_ENV === "development") {
@@ -81,6 +86,26 @@ easyrtc.listen(app, socketServer, null, (err, rtcRef) => {
         );
     });
 });
+
+app.post("/stt", express.raw({ type: 'audio/l16' }), (req, res) => {
+    const endpoint = "https://speech.googleapis.com/v1/speech:longrunningrecognize",
+          KEY = process.env.GOOGLE_API_KEY;
+
+    https.request('https://speech.googleapis.com/v1/speech:recognize', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).end();
+
+
+
+    console.log("your mom", req.body);
+    res.send({status: true});
+
+});
+
+
 
 // Listen on port
 webServer.listen(port, () => {
