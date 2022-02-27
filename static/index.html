@@ -63,7 +63,7 @@
         style="z-index: 100; bottom: 24px; left: 24px; position:fixed;"
         oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)"
 />
-<a-scene>
+<a-scene stats>
 
     <!-- here is some funky model! -->
     <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
@@ -125,6 +125,9 @@
         <template id="camera-rig-template">
             <a-entity></a-entity>
         </template>
+        <template id="avtr">
+            <a-entity></a-entity>
+        </template>
 
         <template id="head-template">
             <a-entity class="avatar" player-info>
@@ -157,17 +160,22 @@
     </a-assets>
 
     <a-entity id="camera-rig"
-              tracked-vr-hands
               joystick-levitation
               spawn-in-circle="radius:3"
               networked="template:#camera-rig-template;"
     >
-        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls
-                  networked="template:#head-template;attachTemplateToLocal:false;">
-            <a-entity visible="true">
-                <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"></a-box>
-            </a-entity>
+        <a-entity id="local-avatar" position="0 1.6 0" wasd-controls networked="template:#avtr" tracked-vr-hands>
+            <a-entity id="local-head" camera look-controls networked="template:#head-template;attachTemplateToLocal:false;"></a-entity>
+            <a-box color="green" depth=".2" height=".2" width=".2" position="0 .5 -.2"></a-box>
+            <a-sphere color="green" radius=".1" position="-.3 1.5 -.2"></a-sphere>
         </a-entity>
+<!--        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls-->
+<!--                  networked="template:#head-template;attachTemplateToLocal:false;">-->
+<!--            <a-entity visible="true">-->
+                <!--
+                -->
+<!--            </a-entity>-->
+<!--        </a-entity>-->
     </a-entity>
 
 </a-scene>
