@@ -1,0 +1,27 @@
+@import url(https://fonts.googleapis.com/css?family=Alfa+Slab+One);
+@import url(https://fonts.googleapis.com/css?family=Julius+Sans+One);
+
+#navBrand {
+    font-family: "Alfa Slab One";
+    font-size: 30px;
+    color: orange;
+}
+
+.col {
+    text-align: center;
+}
+
+h1 {
+    color: orange;
+    font-family: "Alfa Slab One";
+}
+
+.about-body {
+    font-family: "Julius Sans One";
+    font-size: 20px;
+}
+
+.highlight {
+    color: orange;
+    font-weight: bold;
+}

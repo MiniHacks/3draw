@@ -1,11 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Alfa+Slab+One);
 
 .roomHeader {
+    font-family: "Alfa Slab One";
     color: orange;
 }
 
 #navBrand {
+    font-family: "Alfa Slab One";
     font-size: 30px;
+    color: orange;
 }
 
 .bgImage {
