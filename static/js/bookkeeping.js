@@ -189,6 +189,7 @@ NAF.connection.subscribeToDataChannel(
             bookkeeping.amITheHost = false;
             hostId = senderId;
             setBookkeeping(data.bookkeeping);
+            hideStartGameBtn();
         } else {
             // stupid client trying to tell us that we are not the host
             // even though we are
@@ -237,7 +238,10 @@ const countDownFromTimeRemaining = () =>
         })
     );
 
+
 const rungame = async () => {
+    hideStartGameBtn();
+
     console.log("someone is trying to start the game!");
     for (
         bookkeeping.currentRoundNumber = 0;
@@ -249,6 +253,12 @@ const rungame = async () => {
             bookkeeping.currentPlayerInTurn < bookkeeping.turnOrder.length;
             bookkeeping.currentPlayerInTurn += 1
         ) {
+            bookkeeping.currentWord = "";
+            bookkeeping.availableWords = null;
+            bookkeeping.timeRemaining = SHORT_BREAK_TIME;
+            bookkeeping.gameState = GameState.BREAK;
+            await rxjs.lastValueFrom(countDownFromTimeRemaining());
+
             //// PHASE 1: Choose word ////
             const choosableWords = chooseNWords(3);
             // tell person to pick a word
@@ -295,12 +305,6 @@ const rungame = async () => {
             await rxjs.lastValueFrom(countDownFromTimeRemaining());
 
             // TODO: assign points or something?
-
-            bookkeeping.currentWord = "";
-            bookkeeping.availableWords = null;
-            bookkeeping.timeRemaining = SHORT_BREAK_TIME;
-            bookkeeping.gameState = GameState.BREAK;
-            await rxjs.lastValueFrom(countDownFromTimeRemaining());
         }
         bookkeeping.currentWord = "";
         bookkeeping.availableWords = null;
@@ -313,4 +317,16 @@ const rungame = async () => {
     bookkeeping.timeRemaining = LONG_BREAK_TIME;
     bookkeeping.gameState = GameState.FINISHED;
     setBookkeeping(bookkeeping);
+
+    showStartGameBtn();
 };
+
+const hideStartGameBtn = () => {
+    document.querySelector("#start-game").classList.add("hidden");
+    document.querySelector("#start-game").setAttribute("disabled", "true");
+}
+
+const showStartGameBtn = () => {
+    document.querySelector("#start-game").classList.remove("hidden");
+    document.querySelector("#start-game").setAttribute("disabled", "false");
+}
