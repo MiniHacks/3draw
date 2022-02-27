@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3Draw</title>
+    <style>
+        .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .globalcenter {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .vertical-divider {
+            background-color: black;
+            color: black;
+            width: 3px;
+            margin: 30px;
+            height: 500px;
+        }
+    </style>
+
+    <script>
+        const createNewRoomCode = () => "xxx-xxx".replace(/x/g, () => Math.floor(Math.random() * 36).toString(36))
+
+        const joinRoom = (roomCode) => {
+            window.location = `/index.html#${roomCode}`
+        }
+    </script>
+</head>
+<body>
+    <h1>3Draw</h1>
+    <h2>the one thing you can actually use your vr headset for</h2>
+    <div class="row globalcenter" style="position: relative;">
+        <div>
+            <h3>Join a room</h3>
+            <label for="roomcode-textbox">Room code:</label>
+            <input type="text" id="roomcode-textbox">
+            <button onclick="joinRoom(document.querySelector('#roomcode-textbox').value)">Join</button>
+        </div>
+        <div class="vertical-divider"></div>
+        <div>
+            <h3>Create a new room</h3>
+            <button onclick="joinRoom(createNewRoomCode())">Create</button>
+        </div>
+    </div>
+</body>
+</html>

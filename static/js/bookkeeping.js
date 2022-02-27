@@ -137,7 +137,7 @@ const removePlayer = (clientId) => {
 };
 
 // wait for body to load
-window.onload = () => {
+window.addEventListener("load", () => {
     document.body.addEventListener("connected", function (evt) {
         ourNetworkId = evt.detail.clientId;
         bookkeeping.turnOrder.unshift(ourNetworkId);
@@ -175,7 +175,7 @@ window.onload = () => {
     wordDisplayBS.subscribe({
         next: (txt) => (document.querySelector("#worddisplay").innerHTML = txt),
     });
-};
+});
 
 NAF.connection.subscribeToDataChannel(
     DataChannel.BOOKKEEPING_UPDATES,
