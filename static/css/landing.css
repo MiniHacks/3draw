@@ -33,13 +33,13 @@
 }
 
 .center-details {
-    font-family: "Philosopher";
+    font-family: "Afla Slab One";
     font-size: 40px;
     font-weight: bold;
     top: 300px;
     position: absolute;
     z-index: 1;
-    color: coral;
+    color: orange;
     text-shadow: white 1px 1px;
 }
 
@@ -55,4 +55,9 @@
 .italic {
     font-style: italic;
     font-weight: bolder;
+}
+
+.goose {
+    vertical-align: middle;
+    text-align: center;
 }
