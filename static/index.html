@@ -37,14 +37,16 @@
     <script src="js/joystick-levitation.js"></script>
     <script src="js/raycaster-listen.js"></script>
     <script src="js/spawn-in-circle.component.js"></script>
+    <script src="js/overlay.component.js"></script>
     <script src="js/teleport-controller.js"></script>
+    <script src="js/hud.js"></script>
     <script src="js/bookkeeping.js"></script>
     <script src="js/speech-recognition.js"></script>
     <script src="js/grabbing.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 
     <script>
-        let roomCode = window.location.hash?.substr(1) || 'basic-audio';
+        var roomCode = window.location.hash?.substr(1) || 'basic-audio';
         window.addEventListener("load", () => {
             document
                 .querySelector("a-scene")
@@ -53,7 +55,7 @@
                     `room: ${roomCode}; debug: true; adapter: easyrtc; audio: true;`
                 );
 
-            document.querySelector("#roomcode").innerHTML = roomCode;
+            showHudItemById("room-code", `room code is: ${roomCode} (we are hosting)`)
         });
     </script>
 </head>
@@ -156,6 +158,33 @@
 
     </a-assets>
 
+    <a-entity position="10 10 10" scale="10 10 10">
+        <a-entity
+                id="word-to-guess"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="0 0 -1"
+                scale="10 10 1"
+                text="value: ; font: sourcecodepro;"
+                material="color: blue; opacity: 0.0; side: double">
+        </a-entity>
+        <a-entity
+                id="game-state"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="1 0 -1"
+                scale="10 10 1"
+                text="value: waiting for players to join . . .; font: sourcecodepro;"
+                material="color: yellow; opacity: 0.5; side: double">
+        </a-entity>
+        <a-entity
+                id="room-code"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="1 -0.2 -1"
+                scale="10 10 1"
+                text="value: ; font: sourcecodepro;"
+                material="color: blue; opacity: 0.5; side: double">
+        </a-entity>
+    </a-entity>
+
     <a-entity id="camera-rig"
               tracked-vr-hands
               joystick-levitation
@@ -164,7 +193,7 @@
     >
         <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls
                   networked="template:#head-template;attachTemplateToLocal:false;">
-            <a-entity visible="true">
+            <a-entity visible="true" id="hud-goes-here">
                 <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"></a-box>
             </a-entity>
         </a-entity>
@@ -189,9 +218,6 @@
 
 <div class="actions">
     <button id="mic-btn" type="button" class="button">Mute Mic</button>
-    <p style="color: white;"><span id="am-i-the-host">waiting for others to join . . .</span></p>
-    <p style="color: white;">(room code: <span id="roomcode"></span>)</p>
-    <p style="color: white;">(id: <span id="whoami"></span>)</p>
     <button id="start-game" type="button" class="button" onclick="rungame()">start a game</button>
 </div>
 

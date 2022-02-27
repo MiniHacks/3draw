@@ -68,19 +68,26 @@ const setBookkeeping = (newValue) => {
 
     updateState();
 
-    let describeGameState;
+    showHudItemById(
+        "room-code",
+        `room code is: ${roomCode}${bookkeeping.amITheHost ? " (we are hosting)" : ""}`
+    );
+
+    let roundDesc = `round ${bookkeeping.currentRoundNumber + 1}/${bookkeeping.totalNumberOfRounds} -- `;
+    let describeGameState = "";
     switch (bookkeeping.gameState) {
-        case GameState.FINISHED:
-            describeGameState = "game over!";
-            break;
         case GameState.STARTING:
-            describeGameState = "starting";
+            roundDesc = "";
+            describeGameState = "waiting for players to join . . .";
+            break;
+        case GameState.FINISHED:
+            roundDesc = "";
+            describeGameState = "game over!";
             break;
         case GameState.BREAK:
             describeGameState = "intermission";
             break;
         case GameState.PLAYING:
-            describeGameState = `round ${bookkeeping.currentRoundNumber}/${bookkeeping.totalNumberOfRounds} --`;
             switch (bookkeeping.turnState) {
                 case TurnState.CHOOSING:
                     describeGameState += "choosing word";
@@ -90,14 +97,12 @@ const setBookkeeping = (newValue) => {
                     break;
             }
     }
-    let el = document.querySelector("#am-i-the-host");
-    if (el) {
-        el.innerHTML = ` ${bookkeeping.amITheHost ? "(host!)" : ""} -- timer remaining: ${
-            bookkeeping.timeRemaining
-        } (${describeGameState}) ${
-            bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""
-        }`;
+
+    let timer = "";
+    if (roundDesc) {
+        timer = "\n" + `${bookkeeping.timeRemaining} seconds remaining`;
     }
+    showHudItemById("game-state", roundDesc + describeGameState + timer);
 };
 
 const updateState = () => {
@@ -142,7 +147,7 @@ window.addEventListener("load", () => {
     document.body.addEventListener("connected", function (evt) {
         ourNetworkId = evt.detail.clientId;
         bookkeeping.turnOrder.unshift(ourNetworkId);
-        document.querySelector("#whoami").innerHTML = ourNetworkId;
+        // document.querySelector("#whoami").innerHTML = ourNetworkId;
     });
 
     document.body.addEventListener("clientConnected", function (evt) {
@@ -174,7 +179,17 @@ window.addEventListener("load", () => {
     });
 
     wordDisplayBS.subscribe({
-        next: (txt) => (document.querySelector("#worddisplay").innerHTML = txt),
+        next: (txt) => {
+            if (txt) {
+                if (txt != bookkeeping.obscuredWord) {
+                    showHudItemById("word-to-guess", `please draw: ${txt}`);
+                } else {
+                    showHudItemById("word-to-guess", `word is: ${txt}`);
+                }
+            } else {
+                hideHudItemById("word-to-guess");
+            }
+        },
     });
 });
 
