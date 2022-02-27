@@ -7,12 +7,12 @@ AFRAME.registerComponent("grab-release", {
     init: function () {
         console.log("grabbing stuff js file loaded");
 
-        // const self = this;
+        const self = this;
 
-        // this.el.addEventListener("raycaster-intersection", (evt) => {
-        //     self.target = evt.detail.el;
-        //     self.target.setAttribute("material", "color", "yellow");
-        // });
+        this.el.addEventListener("raycaster-intersection", (evt) => {
+            self.target = evt.detail.el;
+            self.target.setAttribute("material", "color", "yellow");
+        });
 
         // this.el.addEventListen("raycaster-intersection-cleared", () => {
         //     self.target = null;
@@ -30,8 +30,7 @@ AFRAME.registerComponent("grab-release", {
         //     self.target.setAttribute("material", "color", "yellow");
         //     /*
         //   self.target.setAttribute("position", {x: idk, y: idk, z: idk})
-        //   */
-        // });
+        // }
 
         // grip released - user drops object
         // this.el.addEventListener("triggerup", function () {});
