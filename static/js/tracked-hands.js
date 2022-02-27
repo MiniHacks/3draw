@@ -5,13 +5,13 @@ AFRAME.registerComponent("tracked-vr-hands", {
         if (document.getElementById("my-tracked-right-hand")) return; // don't add them in more than once!
         ["left", "right"].forEach((side) => {
             const el = document.createElement("a-entity");
-            el.setAttribute("hand-controls", { hand: side });
             el.setAttribute("networked", {
                 template: `#${side}-hand-template`,
                 attachTemplateToLocal: false,
             });
             el.setAttribute("id", `my-tracked-${side}-hand`);
             if (side === "left") {
+                el.setAttribute("hand-controls", { hand: side });
                 el.setAttribute("joystick-levitation", true);
                 el.setAttribute("teleport-controls", {
                     type: "parabolic",
@@ -21,9 +21,9 @@ AFRAME.registerComponent("tracked-vr-hands", {
                     teleportOrigin: "#local-avatar",
                 });
             } else if (side === "right") {
-                el.setAttribute("laser-controls", { hand: "right", model: false });
-                el.setAttribute("raycaster-listen", true);
-                el.setAttribute("grab-release", true);
+                el.setAttribute("laser-controls", { hand: "right", model: true });
+                // el.setAttribute("raycaster-listen", true);
+                el.setAttribute("spawner", true);
             }
 
             this.el.appendChild(el);

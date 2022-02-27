@@ -1,86 +1,87 @@
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>3Draw | Draw with friends in real-time!</title>
-        <meta name="description" content="3Draw | Draw with friends in real-time!" />
+<<<<<<< HEAD
+<head>
+    <meta charset="utf-8"/>
+    <title>3Draw | Draw with friends in real-time!</title>
+    <meta name="description" content="3Draw | Draw with friends in real-time!"/>
 
-        <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
-        <script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
-        <script src="/easyrtc/easyrtc.js"></script>
-        <script src="/dist/networked-aframe.js"></script>
-        <script>
-            NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
-            NAF.schemas.getComponents = (template) => {
-                if (!NAF.schemas.hasTemplate("#head-template")) {
-                    NAF.schemas.add({
-                        template: "#head-template",
-                        components: ["position", "rotation", "player-info"],
-                    });
-                }
-                const components = NAF.schemas.getComponentsOriginal(template);
-                return components;
-            };
-        </script>
-        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-        <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.4/rxjs.umd.js"></script>
-        <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
-        <script src="js/block.js"></script>
-        <script src="js/tracked-hands.js"></script>
-        <script src="js/player-info.js"></script>
-        <script src="js/joystick-levitation.js"></script>
-        <script src="js/raycaster-listen.js"></script>
-        <script src="js/spawn-in-circle.component.js"></script>
-        <script src="js/teleport-controller.js"></script>
-        <script src="js/bookkeeping.js"></script>
-        <script src="js/speech-recognition.js"></script>
-        <script src="js/grabbing.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+    <script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
+    <script src="/easyrtc/easyrtc.js"></script>
+    <script src="/dist/networked-aframe.js"></script>
+    <script>
+      NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
+      NAF.schemas.getComponents = (template) => {
+        if (!NAF.schemas.hasTemplate("#head-template")) {
+          NAF.schemas.add({
+            template: "#head-template",
+            components: ["position", "rotation", "player-info"],
+          });
+        }
+        const components = NAF.schemas.getComponentsOriginal(template);
+        return components;
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.4/rxjs.umd.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/IdeaSpaceVR/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
+    <script src="js/block.js"></script>
+    <script src="js/tracked-hands.js"></script>
+    <script src="js/player-info.js"></script>
+    <script src="js/joystick-levitation.js"></script>
+    <script src="js/raycaster-listen.js"></script>
+    <script src="js/spawn-in-circle.component.js"></script>
+    <script src="js/teleport-controller.js"></script>
+    <script src="js/bookkeeping.js"></script>
+    <script src="js/speech-recognition.js"></script>
+    <script src="js/grabbing.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 
-        <script>
-            let roomCode = window.location.hash?.substr(1) || "basic-audio";
-            window.addEventListener("load", () => {
-                document
-                    .querySelector("a-scene")
-                    .setAttribute(
-                        "networked-scene",
-                        `room: ${roomCode}; debug: true; adapter: easyrtc; audio: true;`
-                    );
+    <script>
+      let roomCode = window.location.hash?.substr(1) || "basic-audio";
+      window.addEventListener("load", () => {
+        document
+          .querySelector("a-scene")
+          .setAttribute(
+            "networked-scene",
+            `room: ${roomCode}; debug: true; adapter: easyrtc; audio: true;`
+          );
 
-                document.querySelector("#roomcode").innerHTML = roomCode;
-            });
-        </script>
-    </head>
-    <body>
-        <input
-            id="username-overlay"
-            style="z-index: 100; bottom: 24px; left: 24px; position: fixed"
-            oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)" />
-        <a-scene>
-            <!-- here is some funky model! -->
-            <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
+        document.querySelector("#roomcode").innerHTML = roomCode;
+      });
+    </script>
+</head>
+<body>
+<input
+        id="username-overlay"
+        style="z-index: 100; bottom: 24px; left: 24px; position: fixed"
+        oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)"/>
+<a-scene>
+    <!-- here is some funky model! -->
+    <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
 
-            <a-asset-item id="goose-obj" src="./assets/goose.obj"></a-asset-item>
-            <a-asset-item id="goose-mtl" src="./assets/goose.mtl"></a-asset-item>
+    <a-asset-item id="goose-obj" src="./assets/goose.obj"></a-asset-item>
+    <a-asset-item id="goose-mtl" src="./assets/goose.mtl"></a-asset-item>
 
-            <!-- how to add the goose model: -->
-            <!-- <a-obj-model
-                id="funky-goose"
-                position="0 10 0"
-                src="#goose-obj" mtl="#goose-mtl"></a-obj-model>
-            -->
+    <!-- how to add the goose model: -->
+    <!-- <a-obj-model
+        id="funky-goose"
+        position="0 10 0"
+        src="#goose-obj" mtl="#goose-mtl"></a-obj-model>
+    -->
 
-            <a-obj-model
-                id="funky-castle"
-                position="-30 0 0"
-                rotation="0 180 0"
-                scale="0.5 0.5 0.5"
-                src="#castle-obj"></a-obj-model>
+    <a-obj-model
+            id="funky-castle"
+            position="-30 0 0"
+            rotation="0 180 0"
+            scale="0.5 0.5 0.5"
+            src="#castle-obj"></a-obj-model>
 
-            <a-entity
-                environment="
+    <a-entity
+            environment="
                             groundColor2: #cccccc;
                             groundColor: #aaaaaa;
                             groundYScale: 5;
@@ -94,180 +95,179 @@
                             groundTexture: squares;
                             gridColor: #c5a543;
                             shadowSize: 5.75"></a-entity>
-            <a-assets>
-                <template id="avatar-template">
-                    <a-entity class="avatar" networked-audio-source>
-                        <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
-                        <a-entity class="face" position="0 0.05 0">
-                            <a-sphere
-                                class="eye"
-                                color="#efefef"
-                                position="0.16 0.1 -0.35"
-                                scale="0.12 0.12 0.12">
-                                <a-sphere
-                                    class="pupil"
-                                    color="#000"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                            <a-sphere
-                                class="eye"
-                                color="#efefef"
-                                position="-0.16 0.1 -0.35"
-                                scale="0.12 0.12 0.12">
-                                <a-sphere
-                                    class="pupil"
-                                    color="#000"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                        </a-entity>
-                    </a-entity>
-                </template>
-                <a-asset-item id="left-hand-model" src="./assets/leftHandHigh.glb"></a-asset-item>
-                <a-asset-item id="right-hand-model" src="./assets/rightHandHigh.glb"></a-asset-item>
+    <a-assets>
+        <template id="avatar-template">
+            <a-entity class="avatar" networked-audio-source>
+                <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
+                <a-entity class="face" position="0 0.05 0">
+                    <a-sphere
+                            class="eye"
+                            color="#efefef"
+                            position="0.16 0.1 -0.35"
+                            scale="0.12 0.12 0.12">
+                        <a-sphere
+                                class="pupil"
+                                color="#000"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                    <a-sphere
+                            class="eye"
+                            color="#efefef"
+                            position="-0.16 0.1 -0.35"
+                            scale="0.12 0.12 0.12">
+                        <a-sphere
+                                class="pupil"
+                                color="#000"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                </a-entity>
+            </a-entity>
+        </template>
+        <a-asset-item id="left-hand-model" src="./assets/leftHandHigh.glb"></a-asset-item>
+        <a-asset-item id="right-hand-model" src="./assets/rightHandHigh.glb"></a-asset-item>
 
-                <template id="camera-rig-template">
-                    <a-entity></a-entity>
-                </template>
+        <template id="camera-rig-template">
+            <a-entity></a-entity>
+        </template>
 
-                <template id="head-template">
-                    <a-entity class="avatar" player-info>
-                        <a-sphere class="head" scale="0.2 0.22 0.2"></a-sphere>
-                        <a-entity class="face" position="0 0.05 0">
-                            <a-sphere
-                                class="eye"
-                                color="white"
-                                position="0.06 0.05 -0.16"
-                                scale="0.04 0.04 0.04">
-                                <a-sphere
-                                    class="pupil"
-                                    color="black"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                            <a-sphere
-                                class="eye"
-                                color="white"
-                                position="-0.06 0.05 -0.16"
-                                scale="0.04 0.04 0.04">
-                                <a-sphere
-                                    class="pupil"
-                                    color="black"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                        </a-entity>
-                        <a-text
-                            class="nametag"
-                            value="?"
-                            rotation="0 180 0"
-                            position=".25 -.35 0"
-                            side="double"
-                            scale=".5 .5 .5"></a-text>
-                    </a-entity>
-                </template>
-                <!-- Hands -->
-                <template id="left-hand-template">
-                    <a-entity>
-                        <a-gltf-model
-                            class="tracked-left-hand"
-                            rotation="0 0 90"
-                            src="#left-hand-model"></a-gltf-model>
-                    </a-entity>
-                </template>
+        <template id="head-template">
+            <a-entity class="avatar" player-info>
+                <a-sphere class="head" scale="0.2 0.22 0.2"></a-sphere>
+                <a-entity class="face" position="0 0.05 0">
+                    <a-sphere
+                            class="eye"
+                            color="white"
+                            position="0.06 0.05 -0.16"
+                            scale="0.04 0.04 0.04">
+                        <a-sphere
+                                class="pupil"
+                                color="black"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                    <a-sphere
+                            class="eye"
+                            color="white"
+                            position="-0.06 0.05 -0.16"
+                            scale="0.04 0.04 0.04">
+                        <a-sphere
+                                class="pupil"
+                                color="black"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                </a-entity>
+                <a-text
+                        class="nametag"
+                        value="?"
+                        rotation="0 180 0"
+                        position=".25 -.35 0"
+                        side="double"
+                        scale=".5 .5 .5"></a-text>
+            </a-entity>
+        </template>
+        <!-- Hands -->
+        <template id="left-hand-template">
+            <a-entity>
+                <a-gltf-model
+                        class="tracked-left-hand"
+                        rotation="0 0 90"
+                        src="#left-hand-model"></a-gltf-model>
+            </a-entity>
+        </template>
 
-                <template id="right-hand-template">
-                    <a-entity>
-                        <a-gltf-model
-                            class="tracked-right-hand"
-                            rotation="0 0 -90"
-                            src="#right-hand-model"></a-gltf-model>
-                    </a-entity>
-                </template>
-            </a-assets>
+        <template id="right-hand-template">
+            <a-entity>
+                <a-gltf-model
+                        class="tracked-right-hand"
+                        rotation="0 0 -90"
+                        src="#right-hand-model"></a-gltf-model>
+            </a-entity>
+        </template>
+    </a-assets>
 
-            <a-entity
-                id="camera-rig"
-                tracked-vr-hands
-                joystick-levitation
-                spawn-in-circle="radius:3"
-                networked="template:#camera-rig-template;">
+    <a-entity
+            id="camera-rig"
+            tracked-vr-hands
+            joystick-levitation
+            spawn-in-circle="radius:3"
+            networked="template:#camera-rig-template;">
+        <a-entity
+                id="local-avatar"
+                camera
+                position="0 1.6 0"
+                look-controls
+                wasd-controls
+                networked="template:#head-template;attachTemplateToLocal:false;">
+            <a-entity visible="true">
+                <!-- <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"></a-box> -->
+                <a-entity geometry="primitive: plane; height: 0.2; width: 1.2" position="0 -0.75 -1"
+                          material="color: gray; opacity: 0.5">
+                </a-entity>
+                <!-- the current hud -->
                 <a-entity
-                    id="local-avatar"
-                    camera
-                    position="0 1.6 0"
-                    look-controls
-                    wasd-controls
-                    networked="template:#head-template;attachTemplateToLocal:false;">
-                    <a-entity visible="true">
-                        <!-- <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"></a-box> -->
-                        <a-entity geometry="primitive: plane; height: 0.2; width: 1.2" position="0 -0.75 -1"
-                        material="color: gray; opacity: 0.5">
-                    </a-entity>
-                    <!-- the current hud -->
-                    <a-entity
                         id="hostindicator"
                         geometry="primitive: plane; height: 0.2; width: 0.2"
                         position="-0.5 -0.75 -1"
                         material="color: red; opacity: 0.5"></a-entity>
-                </a-entity>
             </a-entity>
-
-            <div id="wordchooser" class="hidden">
-                <button type="button" class="button"></button>
-                <button type="button" class="button"></button>
-                <button type="button" class="button"></button>
-            </div>
-
-            <div id="worddisplay"></div>
-
-            <a-entity light="color: #ccccff; intensity: 0.2; type: ambient;" visible=""></a-entity>
-            <a-entity light="color: #ffaaff; intensity: 0.3" position="5 5 5"></a-entity>
-        </a-scene>
-
-        <div class="actions">
-            <button id="mic-btn" type="button" class="button">Mute Mic</button>
-            <p style="color: white"><span id="am-i-the-host">waiting for others to join . . .</span></p>
-            <p style="color: white">(room code: <span id="roomcode"></span>)</p>
-            <p style="color: white">(id: <span id="whoami"></span>)</p>
-            <button id="start-game" type="button" class="button" onclick="rungame()">start a game</button>
+        </a-entity>
+        <div id="wordchooser" class="hidden">
+            <button type="button" class="button"></button>
+            <button type="button" class="button"></button>
+            <button type="button" class="button"></button>
         </div>
+        <div id="worddisplay"></div>
 
-        <script>
-            document.body.addEventListener("connected", function (evt) {
-                console.error("connected event. clientId =", evt.detail.clientId);
-            });
+        <a-entity light="color: #ccccff; intensity: 0.2; type: ambient;" visible=""></a-entity>
+        <a-entity light="color: #ffaaff; intensity: 0.3" position="5 5 5"></a-entity>
+</a-scene>
 
-            document.body.addEventListener("clientConnected", function (evt) {
-                console.error("clientConnected event. clientId =", evt.detail.clientId);
-            });
+<div class="actions">
+    <button id="mic-btn" type="button" class="button">Mute Mic</button>
+    <p style="color: white"><span id="am-i-the-host">waiting for others to join . . .</span></p>
+    <p style="color: white">(room code: <span id="roomcode"></span>)</p>
+    <p style="color: white">(id: <span id="whoami"></span>)</p>
+    <button id="start-game" type="button" class="button" onclick="rungame()">start a game</button>
+</div>
 
-            document.body.addEventListener("clientDisconnected", function (evt) {
-                console.error("clientDisconnected event. clientId =", evt.detail.clientId);
-            });
+<script>
+  document.body.addEventListener("connected", function (evt) {
+    console.error("connected event. clientId =", evt.detail.clientId);
+  });
 
-            document.body.addEventListener("entityCreated", function (evt) {
-                console.error("entityCreated event", evt.detail.el);
-            });
+  document.body.addEventListener("clientConnected", function (evt) {
+    console.error("clientConnected event. clientId =", evt.detail.clientId);
+  });
 
-            document.body.addEventListener("entityRemoved", function (evt) {
-                console.error("entityRemoved event. Entity networkId =", evt.detail.networkId);
-            });
+  document.body.addEventListener("clientDisconnected", function (evt) {
+    console.error("clientDisconnected event. clientId =", evt.detail.clientId);
+  });
 
-            let micEnabled = true;
-            const micBtnEle = document.getElementById("mic-btn");
-            function onConnect() {
-                console.log("onConnect", new Date());
+  document.body.addEventListener("entityCreated", function (evt) {
+    console.error("entityCreated event", evt.detail.el);
+  });
 
-                micBtnEle.addEventListener("click", function () {
-                    NAF.connection.adapter.enableMicrophone(!micEnabled);
-                    micEnabled = !micEnabled;
-                    micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
-                });
-            }
-        </script>
-    </body>
+  document.body.addEventListener("entityRemoved", function (evt) {
+    console.error("entityRemoved event. Entity networkId =", evt.detail.networkId);
+  });
+
+  let micEnabled = true;
+  const micBtnEle = document.getElementById("mic-btn");
+
+  function onConnect() {
+    console.log("onConnect", new Date());
+
+    micBtnEle.addEventListener("click", function () {
+      NAF.connection.adapter.enableMicrophone(!micEnabled);
+      micEnabled = !micEnabled;
+      micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+    });
+  }
+</script>
+</body>
 </html>
 
 <script>
@@ -275,5 +275,43 @@
   const hostind = document.querySelector("#hostindicator");
   console.log(hostind)
   hostind.setAttribute("text", "value: NOT HOST")
-  console.log(hostind )
+  console.log(hostind)
+  document.body.addEventListener('connected', function (evt) {
+    console.error('connected event. clientId =', evt.detail.clientId);
+  });
+
+  document.body.addEventListener('clientConnected', function (evt) {
+    console.error('clientConnected event. clientId =', evt.detail.clientId);
+  });
+
+  document.body.addEventListener('clientDisconnected', function (evt) {
+    console.error('clientDisconnected event. clientId =', evt.detail.clientId);
+  });
+
+  document.body.addEventListener('entityCreated', function (evt) {
+    console.error('entityCreated event', evt.detail.el);
+  });
+
+  document.body.addEventListener('entityRemoved', function (evt) {
+    console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
+  });
+
+  let micEnabled = true;
+  const micBtnEle = document.getElementById("mic-btn");
+
+  function onConnect() {
+    console.log("onConnect", new Date());
+
+    micBtnEle.addEventListener("click", function () {
+      NAF.connection.adapter.enableMicrophone(!micEnabled);
+      micEnabled = !micEnabled;
+      micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+    });
+  }
+
+  document.addEventListener("keypress", evt => {
+    if (evt.key === "Escape")
+      NAF.connection.broadcastDataGuaranteed("clear", true)
+    else console.log(evt);
+  })
 </script>
