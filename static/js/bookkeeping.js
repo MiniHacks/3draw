@@ -31,6 +31,7 @@ let hostId = null;
 
 let bookkeeping = {
     currentWord: "",
+    obscuredWord: "",
     availableWords: null,
     totalNumberOfRounds: 5,
     currentRoundNumber: 0,
@@ -117,8 +118,8 @@ const updateState = () => {
     } else {
         // not our turn
         if (bookkeeping.turnState == TurnState.DRAWING) {
-            state.word = bookkeeping.currentWord.replace(/./g, "_ ");
             // we need to guess the word
+            state.word = bookkeeping.obscuredWord;
         }
     }
 
@@ -238,7 +239,6 @@ const countDownFromTimeRemaining = () =>
         })
     );
 
-
 const rungame = async () => {
     hideStartGameBtn();
 
@@ -253,7 +253,7 @@ const rungame = async () => {
             bookkeeping.currentPlayerInTurn < bookkeeping.turnOrder.length;
             bookkeeping.currentPlayerInTurn += 1
         ) {
-            bookkeeping.currentWord = "";
+            bookkeeping.obscuredWord = bookkeeping.currentWord;
             bookkeeping.availableWords = null;
             bookkeeping.timeRemaining = SHORT_BREAK_TIME;
             bookkeeping.gameState = GameState.BREAK;
@@ -302,11 +302,38 @@ const rungame = async () => {
             bookkeeping.timeRemaining = DRAWING_TIME;
             bookkeeping.turnState = TurnState.DRAWING;
 
+            rxjs.timer(0, Math.floor((DRAWING_TIME / 3) * 1000))
+                .pipe(
+                    // progressively reveal 1 or 2 letters (need 1 extra to reveal 0 letters)
+                    rxjs.operators.take(bookkeeping.currentWord.length < 5 ? 2 : 3),
+                    rxjs.operators.scan((acc, num_revealed_letters) => {
+                        while (acc.size < num_revealed_letters) {
+                            acc.add(Math.floor(Math.random() * bookkeeping.currentWord.length));
+                        }
+                        return acc;
+                    }, new Set()),
+                    rxjs.operators.map((idxes_to_show) =>
+                        bookkeeping.currentWord.replaceAll(/./g, (char, idx) => {
+                            if (idxes_to_show.has(idx)) {
+                                return `${char} `;
+                            } else {
+                                return `_ `;
+                            }
+                        })
+                    )
+                )
+                .subscribe({
+                    next: (newObscured) => {
+                        console.log("updating obscured word");
+                        bookkeeping.obscuredWord = newObscured;
+                    },
+                });
+
             await rxjs.lastValueFrom(countDownFromTimeRemaining());
 
             // TODO: assign points or something?
         }
-        bookkeeping.currentWord = "";
+        bookkeeping.obscuredWord = bookkeeping.currentWord;
         bookkeeping.availableWords = null;
         bookkeeping.timeRemaining = LONG_BREAK_TIME;
         bookkeeping.gameState = GameState.BREAK;
@@ -324,9 +351,9 @@ const rungame = async () => {
 const hideStartGameBtn = () => {
     document.querySelector("#start-game").classList.add("hidden");
     document.querySelector("#start-game").setAttribute("disabled", "true");
-}
+};
 
 const showStartGameBtn = () => {
     document.querySelector("#start-game").classList.remove("hidden");
     document.querySelector("#start-game").setAttribute("disabled", "false");
-}
+};
