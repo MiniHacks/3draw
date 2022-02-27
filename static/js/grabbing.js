@@ -1,17 +1,24 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
-
+const VALID_INTERSECTION_FILTERS = [
+    (el) => {
+        return el.tagName === "A-BOX";
+    },
+];
 AFRAME.registerComponent("grab-release", {
     // component for grabbing objects and releasing them
     init: function () {
         console.log("grabbing stuff js file loaded");
 
         const self = this;
-
         this.el.addEventListener("raycaster-intersection", (evt) => {
-            self.target = evt.detail.el;
-            self.target.setAttribute("material", "color", "yellow");
+            self.targets = evt.detail.els.filter((el) => VALID_INTERSECTION_FILTERS.some((func) => func(el)));
+            if (self.targets.length) {
+                self.targets[0].setAttribute("material", "color", "green");
+                console.log(self.targets);
+            }
+            // self.target.setAttribute("material", "color", "yellow");
         });
 
         // this.el.addEventListen("raycaster-intersection-cleared", () => {
