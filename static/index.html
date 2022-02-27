@@ -43,6 +43,20 @@
     <script src="js/speech-recognition.js"></script>
     <script src="js/grabbing.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+
+    <script>
+        let roomCode = window.location.hash?.substr(1) || 'basic-audio';
+        window.addEventListener("load", () => {
+            document
+                .querySelector("a-scene")
+                .setAttribute(
+                    "networked-scene",
+                    `room: ${roomCode}; debug: true; adapter: easyrtc; audio: true;`
+                );
+            
+            document.querySelector("#roomcode").innerHTML = roomCode;
+        });
+    </script>
 </head>
 <body>
 <input
@@ -50,12 +64,7 @@
         style="z-index: 100; bottom: 24px; left: 24px; position:fixed;"
         oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)"
 />
-<a-scene
-        networked-scene="
-            room: basic-audio;
-            debug: true;
-            adapter: easyrtc;
-            audio: true;">
+<a-scene>
 
     <!-- here is some funky model! -->
     <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
@@ -177,9 +186,11 @@
 </a-scene>
 
 <div class="actions">
-    <button id="mic-btn" type="button" class="button">Mute Mic</button>
-    <p style="color: white;">am i the bookkeeper? <span id="am-i-the-host">yes</span></p>
-    <button id="start-game" type="button" class="button" onclick="startgame()">start a game</button>
+  <button id="mic-btn" type="button" class="button">Mute Mic</button>
+  <p style="color: white;"><span id="am-i-the-host">waiting for others to join . . .</span></p>
+  <p style="color: white;">(room code: <span id="roomcode"></span>)</p>
+  <p style="color: white;">(id: <span id="whoami"></span>)</p>
+  <button id="start-game" type="button" class="button" onclick="rungame()">start a game</button>
 </div>
 
 
