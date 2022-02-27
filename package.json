@@ -7,6 +7,7 @@
   "author": "minihacks uwu",
   "license": "WTFPL",
   "dependencies": {
+    "@google-cloud/speech": "^4.10.0",
     "chalk": "^4.1.2",
     "concurrently": "^7.0.0",
     "cors": "^2.8.5",

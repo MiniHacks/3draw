@@ -4,7 +4,12 @@ const path = require("path");
 const express = require("express");
 const socketIo = require("socket.io");
 const easyrtc = require("open-easyrtc");
-const grinkus = require("@google-cloud/speech");
+const grinkus = require("@google-cloud/speech").v1p1beta1,
+      grinkusClient = new grinkus.SpeechClient({
+          projectId: 'speechtotext@draw-342602.iam.gserviceaccount.com',
+          keyFile: './google-creds.json'
+      });
+const fs = require("fs");
 
 process.title = "NAF-server";
 const port = process.env.PORT || 3001;
@@ -61,12 +66,74 @@ easyrtc.events.on("easyrtcAuth", (socket, easyrtcid, msg, socketCallback, callba
     );
 });
 
+let transcriptionClients = {};
+
+easyrtc.events.on('easyrtcMsg', (conn, msg, cb, next) => {
+    let clientId = conn.getEasyrtcid();
+    //console.log(`easyrtcMsg recvd from ${clientId}`);
+
+    let {msgType: typ, msgData: rawData} = msg;
+
+    let buffer = new Int16Array(Object.values(rawData));
+    switch(typ) {
+        case 'AUDIO_DATA':
+            let transcript = transcriptionClients[clientId] ?
+                transcriptionClients[clientId] :
+                {
+                    stream: grinkusClient
+                        .streamingRecognize({
+                            config: {
+                                encoding: 'LINEAR16',
+                                languageCode: 'en-US',
+                                sampleRateHertz: 48000,
+                            },
+                            interimResults: true,
+                        }).on('data', data => {
+                            console.log(`we received data! ${data}`);
+                            if (!(data.results[0] && data.results[0].alternatives[0]))
+                                return;
+
+                            console.log(data.results[0].alternatives[0].transcript);
+                        }).on('error', e => {
+                            console.error(e);
+                            transcriptionClients[clientId] = null;
+
+                        }),
+                    ts: Date.now(),
+                }
+            console.log(transcriptionClients);
+            if(transcript?.stream?.writable) {
+                //console.log("we are writing da stream baybee");
+                transcript.stream.write(buffer);
+                fs.writeFileSync("data.pcm", buffer, {
+                    flag: 'a',
+                });
+
+            }
+
+            if(Date.now() - transcript.ts > 1000 * 60 * 4 + 30) {
+                console.log(`killing session, delta ${Date.now() - transcript.ts}`);
+                transcript?.stream?.end();
+                transcript = null;
+            }
+
+            transcriptionClients[clientId] = transcript;
+
+            break;
+    }
+    next(null);
+});
+
 // To test, lets print the credential to the console for every room join!
 easyrtc.events.on("roomJoin", (connectionObj, roomName, roomParameter, callback) => {
     console.log(
         "[" + connectionObj.getEasyrtcid() + "] Credential retrieved!",
         connectionObj.getFieldValueSync("credential")
     );
+
+    connectionObj.events.on('AUDIO_DATA', (data) => {
+        console.log(`We got an event:\n${connectionObj}\nData:\n${data}`);
+    });
     easyrtc.events.defaultListeners.roomJoin(connectionObj, roomName, roomParameter, callback);
 });
 

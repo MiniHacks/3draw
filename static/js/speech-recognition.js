@@ -27,18 +27,27 @@ let buffer = [];
 
 // there was really no reason to, you just wanted a bread fence.
 captureNode.port.onmessage = async ({ data }) => {
-    buffer.push(...Array.from(data)[0].map(x => x *= 0xffff)); // TODO: why
+    //buffer.push(...Array.from(data)[0].map(x => x *= 0xffff)); // TODO: why
+    buffer = Array.from(data)[0].map(x => x *= 0xffff);
+    easyrtc.sendServerMessage('AUDIO_DATA', new Int16Array(buffer),
+                              console.log, console.error);
+
 };
 
 setInterval(async () => {
     //console.log(buffer);
     //console.log(buffer);
 
+    // use this channel for anything else and you WILL die
+    //easyrtc.sendServerMessage('AUDIO_DATA', new Int16Array(buffer.splice(0, buffer.length)),
+    //                          console.log, console.error);
+
+    /*
     await fetch(`/stt`, {
         method: 'POST',
         headers: {
             'Content-Type': 'audio/l16',
         },
         body: new Int16Array(buffer.splice(0, buffer.length)),
-    });
+    });*/
 }, 500);
