@@ -1,20 +1,20 @@
 /* eslint-disable no-undef */
+console.log("raycasting");
 AFRAME.registerComponent("raycaster-listen", {
     init: function (data) {
         const plane = document.querySelector("#plane");
-        plane.addEventListener("raycaster-intersected", (evt) => {
-            this.raycaster = evt.detail.el;
-        });
-        plane.addEventListener("raycaster-intersected-cleared", (evt) => {
-            this.raycaster = null;
-        });
-        const self = this;
-        this.el.addEventListener("gripdown", function (event) {
+        // plane.addEventListener("raycaster-intersected", (evt) => {
+        //     this.raycastr = evt.detail.el;
+        // });
+        // plane.addEventListener("raycaster-intersected-cleared", (evt) => {
+        //     this.raycastr = null;
+        // });
+        this.el.addEventListener("gripdown", (event) => {
             const entity = document.createElement("a-box");
-            if (self.intersectionPoint) {
-                entity.setAttribute("position", self.intersectionPoint);
+            if (this.intersectionPoint) {
+                entity.setAttribute("position", this.intersectionPoint);
             }
-            self.el.sceneEl.appendChild(entity);
+            this.el.sceneEl.appendChild(entity);
         });
     },
 
@@ -25,7 +25,7 @@ AFRAME.registerComponent("raycaster-listen", {
         } // checks for null
         const plane = document.querySelector("#plane");
 
-        let intersection = this.raycaster.components.raycaster.getIntersection(plane);
+        let intersection = this.raycastr.components.raycaster.getIntersection(plane);
         if (!intersection) {
             this.intersectionPoint = null;
             return;
