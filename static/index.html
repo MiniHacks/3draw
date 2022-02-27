@@ -55,28 +55,30 @@
             debug: true;
             adapter: easyrtc;
             audio: true;">
-    <!-- yavapai? forest? osiris?  -->
     
-    <a-entity environment= "groundColor2: #cccccc;
+    <!-- here is some funky model! -->
+    <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
+
+    <a-obj-model
+        id="funky-castle"
+        position="-30 0 0"
+        rotation="0 180 0"
+        scale="0.5 0.5 0.5"
+        src="#castle-obj"></a-obj-model>
+
+    <a-entity environment= "
+                            groundColor2: #cccccc;
                             groundColor: #aaaaaa;
                             groundYScale: 5;
-                            dressingUniformScale: false;
                             flatShading: true;
                             skyColor: #96edfa;
-                            playArea: 4.0;
                             horizonColor: #ffca8a;
-                            dressingColor: #47031f;
-                            dressing: cubes;
                             active: true;
-                            seed: 8;
                             skyType: gradient; 
                             lightPosition: -1.2 0.88 -0.55;
                             ground: noise;
                             groundTexture: squares;
-                            dressingAmount: 500;
-                            dressingScale: 5.0;
-                            dressingVariance: { x: 0, y: 0, z: 10};
-                            gridColor: #c5a543; preset: forest;
+                            gridColor: #c5a543;
                             shadowSize: 5.75"></a-entity>
     <a-assets>
                 <template id="avatar-template">
@@ -144,8 +146,6 @@
         </template>
 
     </a-assets>
-    <a-box color="green" depth="1" height="1" width="1" position="0 1 -5">
-    </a-box>
 
     <a-entity id="camera-rig"
               tracked-vr-hands
@@ -153,7 +153,7 @@
               spawn-in-circle="radius:3"
               networked="template:#camera-rig-template;"
     >
-        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls
+        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls
                   networked="template:#head-template;" visible="false">
         </a-entity>
     </a-entity>
