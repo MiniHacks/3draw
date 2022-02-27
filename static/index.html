@@ -62,6 +62,16 @@
             <!-- here is some funky model! -->
             <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
 
+            <a-asset-item id="goose-obj" src="./assets/goose.obj"></a-asset-item>
+            <a-asset-item id="goose-mtl" src="./assets/goose.mtl"></a-asset-item>
+
+            <!-- how to add the goose model: -->
+            <!-- <a-obj-model
+                id="funky-goose"
+                position="0 10 0"
+                src="#goose-obj" mtl="#goose-mtl"></a-obj-model>
+            -->
+
             <a-obj-model
                 id="funky-castle"
                 position="-30 0 0"
@@ -195,11 +205,12 @@
                         <a-entity geometry="primitive: plane; height: 0.2; width: 1.2" position="0 -0.75 -1"
                         material="color: gray; opacity: 0.5">
                     </a-entity>
+                    <!-- the current hud -->
                     <a-entity
                         id="hostindicator"
                         geometry="primitive: plane; height: 0.2; width: 0.2"
                         position="-0.5 -0.75 -1"
-                        material="color: blue; opacity: 0.5"></a-entity>
+                        material="color: red; opacity: 0.5"></a-entity>
                 </a-entity>
             </a-entity>
 
@@ -211,11 +222,8 @@
 
             <div id="worddisplay"></div>
 
-            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
-            </a-box>
-
-            <a-entity light="color: #ccccff; intensity: 0.4; type: ambient;" visible=""></a-entity>
-            <a-entity light="color: #ffaaff; intensity: 0.6" position="5 5 5"></a-entity>
+            <a-entity light="color: #ccccff; intensity: 0.2; type: ambient;" visible=""></a-entity>
+            <a-entity light="color: #ffaaff; intensity: 0.3" position="5 5 5"></a-entity>
         </a-scene>
 
         <div class="actions">
