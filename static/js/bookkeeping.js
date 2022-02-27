@@ -52,6 +52,21 @@ Object.freeze(DataChannel);
 
 const wordChooserBS = new rxjs.BehaviorSubject(null);
 const wordDisplayBS = new rxjs.BehaviorSubject("");
+const clickingEnabled = new rxjs.BehaviorSubject(false);
+
+clickingEnabled.subscribe({
+    next: (isEnabled) => {
+        // console.log("clicking enabled: ", isEnabled);
+        // const existingControls = document.querySelectorAll("#camera-rig > a-entity[laser-controls]");
+        // if (isEnabled && existingControls.length == 0) {
+        //     const template = document.querySelector("#cursor-template");
+        //     const el = template.content.cloneNode(true);
+        //     document.querySelector("#camera-rig").appendChild(el);
+        // } else if (!isEnabled) {
+        //     existingControls.forEach(el => el.parentNode.removeChild(el));
+        // }
+    },
+});
 
 const setBookkeeping = (newValue) => {
     // FIXME: makes it difficult to change the host in the middle of the game
@@ -68,19 +83,26 @@ const setBookkeeping = (newValue) => {
 
     updateState();
 
-    let describeGameState;
+    showHudItemById(
+        "room-code",
+        `room code is: ${roomCode}${bookkeeping.amITheHost ? " (we are hosting)" : ""}`
+    );
+
+    let roundDesc = `round ${bookkeeping.currentRoundNumber + 1}/${bookkeeping.totalNumberOfRounds} -- `;
+    let describeGameState = "";
     switch (bookkeeping.gameState) {
-        case GameState.FINISHED:
-            describeGameState = "game over!";
-            break;
         case GameState.STARTING:
-            describeGameState = "starting";
+            roundDesc = "";
+            describeGameState = "waiting for players to join . . .";
+            break;
+        case GameState.FINISHED:
+            roundDesc = "";
+            describeGameState = "game over!";
             break;
         case GameState.BREAK:
             describeGameState = "intermission";
             break;
         case GameState.PLAYING:
-            describeGameState = `round ${bookkeeping.currentRoundNumber}/${bookkeeping.totalNumberOfRounds} --`;
             switch (bookkeeping.turnState) {
                 case TurnState.CHOOSING:
                     describeGameState += "choosing word";
@@ -90,14 +112,12 @@ const setBookkeeping = (newValue) => {
                     break;
             }
     }
-    let el = document.querySelector("#am-i-the-host");
-    if (el) {
-        el.innerHTML = ` ${bookkeeping.amITheHost ? "(host!)" : ""} -- timer remaining: ${
-            bookkeeping.timeRemaining
-        } (${describeGameState}) ${
-            bookkeeping.turnOrder[bookkeeping.currentPlayerInTurn] === ourNetworkId ? "we are up!" : ""
-        }`;
+
+    let timer = "";
+    if (roundDesc) {
+        timer = "\n" + `${bookkeeping.timeRemaining} seconds remaining`;
     }
+    showHudItemById("game-state", roundDesc + describeGameState + timer);
 };
 
 const updateState = () => {
@@ -142,7 +162,7 @@ window.addEventListener("load", () => {
     document.body.addEventListener("connected", function (evt) {
         ourNetworkId = evt.detail.clientId;
         bookkeeping.turnOrder.unshift(ourNetworkId);
-        document.querySelector("#whoami").innerHTML = ourNetworkId;
+        // document.querySelector("#whoami").innerHTML = ourNetworkId;
     });
 
     document.body.addEventListener("clientConnected", function (evt) {
@@ -161,20 +181,46 @@ window.addEventListener("load", () => {
         next: (v) => {
             console.log("word chooser bs subscriber -- ", v);
             if (!v) {
-                document.querySelector("#wordchooser").classList.add("hidden");
+                document.querySelectorAll("#wordchooser > a-entity").forEach(hideHudItemByEl);
+                clickingEnabled.next(false);
             } else {
-                console.log("yuh");
-                document.querySelector("#wordchooser").classList.remove("hidden");
-                document.querySelectorAll("#wordchooser > button").forEach((el, idx) => {
-                    el.innerHTML = bookkeeping.availableWords[idx];
-                    el.onclick = () => chooseAWord(bookkeeping.availableWords[idx]);
+                clickingEnabled.next(true);
+                document.querySelectorAll("#wordchooser > a-entity").forEach((el, idx) => {
+                    showHudItemByEl(el, bookkeeping.availableWords[idx]);
+                    el.addEventListener("click", () => chooseAWord(bookkeeping.availableWords[idx]));
+                    wordDisplayBS.next("clicked!");
                 });
             }
         },
     });
 
     wordDisplayBS.subscribe({
-        next: (txt) => (document.querySelector("#worddisplay").innerHTML = txt),
+        next: (txt) => {
+            if (txt) {
+                if (txt != bookkeeping.obscuredWord) {
+                    showHudItemById("word-to-guess", `please draw: ${txt}`);
+                } else if (bookkeeping.gameState == GameState.BREAK) {
+                    showHudItemById("word-to-guess", `word was: ${txt}`);
+                } else {
+                    showHudItemById("word-to-guess", `word is: ${txt}`);
+                }
+            } else {
+                hideHudItemById("word-to-guess");
+            }
+        },
+    });
+
+    document.querySelectorAll("#wordchooser > a-entity").forEach((el) => {
+        el.addEventListener("click", (event) => {
+            chooseAWord(el.getAttribute("text").value);
+        });
+
+        el.addEventListener("mouseover", (event) => {
+            el.setAttribute("material", "color", "red");
+        });
+        el.addEventListener("mouseleave", (event) => {
+            el.setAttribute("material", "color", "orange");
+        });
     });
 });
 
@@ -294,9 +340,10 @@ const rungame = async () => {
             //     )
             // );
 
-            // // now we have chosen a word
-            // console.log("the chosen word was ", chosenWord);
             const chosenWord = choosableWords[0];
+
+            // now we have chosen a word
+            console.log("the chosen word was ", chosenWord);
 
             //// PHASE 2: Guessing ////
             bookkeeping.currentWord = chosenWord;

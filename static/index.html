@@ -33,7 +33,9 @@
         <script src="js/joystick-levitation.js"></script>
         <script src="js/raycaster-listen.js"></script>
         <script src="js/spawn-in-circle.component.js"></script>
+        <script src="js/overlay.component.js"></script>
         <script src="js/teleport-controller.js"></script>
+        <script src="js/hud.js"></script>
         <script src="js/bookkeeping.js"></script>
         <script src="js/speech-recognition.js"></script>
         <script src="js/grabbing.js"></script>
@@ -214,17 +216,96 @@
                 </a-entity>
             </a-entity>
 
-            <div id="wordchooser" class="hidden">
-                <button type="button" class="button"></button>
-                <button type="button" class="button"></button>
-                <button type="button" class="button"></button>
-            </div>
+        <template id="right-hand-template">
+            <a-entity>
+                <a-gltf-model class="tracked-right-hand" rotation="0 0 -90" src="#right-hand-model"></a-gltf-model>
+            </a-entity>
+        </template>
 
-            <div id="worddisplay"></div>
+    </a-assets>
 
-            <a-entity light="color: #ccccff; intensity: 0.2; type: ambient;" visible=""></a-entity>
-            <a-entity light="color: #ffaaff; intensity: 0.3" position="5 5 5"></a-entity>
-        </a-scene>
+    <a-entity position="0 10 -3" scale="10 10 10">
+        <a-entity
+                id="word-to-guess"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="0 0 -1"
+                scale="10 10 1"
+                text="value: ; font: sourcecodepro;"
+                material="color: blue; opacity: 0.0; side: double">
+        </a-entity>
+        <a-entity
+                id="game-state"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="1 0 -1"
+                scale="10 10 1"
+                text="value: waiting for players to join . . .; font: sourcecodepro;"
+                material="color: yellow; opacity: 0.5; side: double">
+        </a-entity>
+        <a-entity
+                id="room-code"
+                geometry="primitive: plane; height: 0.02; width: 0.1"
+                position="1 -0.2 -1"
+                scale="10 10 1"
+                text="value: ; font: sourcecodepro;"
+                material="color: blue; opacity: 0.5; side: double">
+        </a-entity>
+
+        <a-entity id="wordchooser" position=".7 -0.4 -1">
+            <a-entity
+                    geometry="primitive: plane; height: 0.02; width: 0.02"
+                    position="0 0 0"
+                    scale="10 10 1"
+                    text="value: ; wrapCount: 10; align: center;  font: sourcecodepro;"
+                    material="color: orange; opacity: 0.0; side: double">
+            </a-entity>
+            <a-entity
+                    geometry="primitive: plane; height: 0.02; width: 0.02"
+                    position="0.3 0 0"
+                    scale="10 10 1"
+                    text="value: ; wrapCount: 10; align: center;  font: sourcecodepro;"
+                    material="color: orange; opacity: 0.0; side: double">
+            </a-entity>
+            <a-entity
+                    geometry="primitive: plane; height: 0.02; width: 0.02"
+                    position="0.6 0 0"
+                    scale="10 10 1"
+                    text="value: ; wrapCount: 10; align: center;  font: sourcecodepro;"
+                    material="color: orange; opacity: 0.0; side: double">
+            </a-entity>
+        </a-entity>
+    </a-entity>
+
+    <a-entity id="camera-rig"
+              tracked-vr-hands
+              joystick-levitation
+              spawn-in-circle="radius:3"
+              networked="template:#camera-rig-template;"
+    >
+        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls
+                  networked="template:#head-template;attachTemplateToLocal:false;">
+            <a-entity visible="true" id="hud-goes-here">
+                <a-box color="green" depth="1" height="1" width="1" position="0 1 -5"></a-box>
+            </a-entity>
+
+        </a-entity>
+        <!-- <a-entity cursor="fuse: true; fuseTimeout: 500" laser-controls></a-entity> -->
+    </a-entity>
+
+    <template id="cursor-template">
+        <!-- <a-entity cursor="fuse: true; fuseTimeout: 500; max-distance: 30000000; rayOrigin: mouse;"
+            position="0 0 -5"
+            laser-controls
+            overlay
+            geometry="primitive: ring";
+            material="color: blue; shader: flat">
+        </a-entity> -->
+    </template>
+
+
+    <!-- <a-entity id="refresh-button" geometry="primitive: plane; height: 1; width:1" material="color: red; side: double" position="0 10 -2" scale="2 2 2"></a> -->
+        <a-entity light="color: #ccccff; intensity: 0.2; type: ambient;" visible=""></a-entity>
+        <a-entity light="color: #ffaaff; intensity: 0.3" position="5 5 5"></a-entity>
+</a-scene>
 
         <div class="actions">
             <button id="mic-btn" type="button" class="button">Mute Mic</button>
