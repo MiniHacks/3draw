@@ -282,20 +282,21 @@ const rungame = async () => {
             });
 
             // start timer for choosing a word (networked)
-            const { chosenWord } = await rxjs.lastValueFrom(
-                rxjs.race(
-                    // If they exceed the time limit, then pick the first word for them
-                    countDownFromTimeRemaining().pipe(
-                        rxjs.operators.last(),
-                        rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
-                    ),
-                    waitForWordChoiceReply,
-                    hostWordChooserSubject.pipe(rxjs.operators.first())
-                )
-            );
+            // const { chosenWord } = await rxjs.lastValueFrom(
+            //     rxjs.race(
+            //         // If they exceed the time limit, then pick the first word for them
+            //         countDownFromTimeRemaining().pipe(
+            //             rxjs.operators.last(),
+            //             rxjs.operators.mapTo({ chosenWord: choosableWords[0] })
+            //         ),
+            //         waitForWordChoiceReply,
+            //         hostWordChooserSubject.pipe(rxjs.operators.first())
+            //     )
+            // );
 
-            // now we have chosen a word
-            console.log("the chosen word was ", chosenWord);
+            // // now we have chosen a word
+            // console.log("the chosen word was ", chosenWord);
+            const chosenWord = choosableWords[0];
 
             //// PHASE 2: Guessing ////
             bookkeeping.currentWord = chosenWord;
