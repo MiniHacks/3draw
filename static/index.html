@@ -42,6 +42,20 @@
     <script src="js/speech-recognition.js"></script>
     <script src="js/grabbing.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+
+    <script>
+        let roomCode = window.location.hash?.substr(1) || 'basic-audio';
+        window.addEventListener("load", () => {
+            document
+                .querySelector("a-scene")
+                .setAttribute(
+                    "networked-scene",
+                    `room: ${roomCode}; debug: true; adapter: easyrtc; audio: true;`
+                );
+
+            document.querySelector("#roomcode").innerHTML = roomCode;
+        });
+    </script>
 </head>
 <body>
 <input
@@ -49,12 +63,7 @@
         style="z-index: 100; bottom: 24px; left: 24px; position:fixed;"
         oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)"
 />
-<a-scene
-        networked-scene="
-            room: basic-audio;
-            debug: true;
-            adapter: easyrtc;
-            audio: true;">
+<a-scene>
 
     <!-- here is some funky model! -->
     <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
