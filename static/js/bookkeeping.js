@@ -22,7 +22,7 @@ let wordList = ["arms", "legs", "laptop", "basketball", "baseball"];
 })();
 
 const CHOOSING_TIME = 15;
-const DRAWING_TIME = 5;
+const DRAWING_TIME = 150;
 const SHORT_BREAK_TIME = 5;
 const LONG_BREAK_TIME = 15;
 
