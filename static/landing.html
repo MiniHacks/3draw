@@ -32,7 +32,8 @@
                 "xxx-xxx".replace(/x/g, () => Math.floor(Math.random() * 36).toString(36));
 
             const joinRoom = (roomCode) => {
-                window.location = `/index.html#${roomCode}`;
+                const dispName = document.querySelector("#startName").value;
+                window.location = `/index.html#${roomCode}?${dispName}`;
             };
         </script>
         <link rel="stylesheet" type="text/css" href="/css/landing.css" />
@@ -72,18 +73,42 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col form-col">
-                    <div>
-                        <h2 class="roomHeader">Join a Room</h2>
-                        <label for="roomcode-textbox">Room code:</label>
-                        <input type="text" id="roomcode-textbox" />
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            onclick="joinRoom(document.querySelector('#roomcode-textbox').value)">
-                            Join
-                        </button>
+                <div class="col"></div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="startName" class="form-label">Display Name</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="startName"
+                            placeholder="Enter Display Name Here" />
                     </div>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col form-col">
+                    <h2 class="roomHeader">Join a Room</h2>
+                    <form class="row g-3">
+                        <!-- <input type="text" id="roomcode-textbox" /> -->
+                        <div class="col-auto">
+                            <div class="mb-3">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="roomcode-textbox"
+                                    placeholder="Room Code" />
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                onclick="joinRoom(document.querySelector('#roomcode-textbox').value)">
+                                Join
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div class="col form-col">
                     <div>
