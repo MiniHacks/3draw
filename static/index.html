@@ -41,6 +41,7 @@
     <script src="js/teleport-controller.js"></script>
     <script src="js/bookkeeping.js"></script>
     <script src="js/speech-recognition.js"></script>
+    <script src="js/grabbing.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 </head>
 <body>
@@ -55,16 +56,16 @@
             debug: true;
             adapter: easyrtc;
             audio: true;">
-    
+
     <!-- here is some funky model! -->
     <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
 
     <a-obj-model
-        id="funky-castle"
-        position="-30 0 0"
-        rotation="0 180 0"
-        scale="0.5 0.5 0.5"
-        src="#castle-obj"></a-obj-model>
+            id="funky-castle"
+            position="-30 0 0"
+            rotation="0 180 0"
+            scale="0.5 0.5 0.5"
+            src="#castle-obj"></a-obj-model>
 
     <a-entity environment= "
                             groundColor2: #cccccc;
@@ -74,42 +75,42 @@
                             skyColor: #96edfa;
                             horizonColor: #ffca8a;
                             active: true;
-                            skyType: gradient; 
+                            skyType: gradient;
                             lightPosition: -1.2 0.88 -0.55;
                             ground: noise;
                             groundTexture: squares;
                             gridColor: #c5a543;
                             shadowSize: 5.75"></a-entity>
     <a-assets>
-                <template id="avatar-template">
-                    <a-entity class="avatar" networked-audio-source>
-                        <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
-                        <a-entity class="face" position="0 0.05 0">
-                            <a-sphere
-                                class="eye"
-                                color="#efefef"
-                                position="0.16 0.1 -0.35"
-                                scale="0.12 0.12 0.12">
-                                <a-sphere
-                                    class="pupil"
-                                    color="#000"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                            <a-sphere
-                                class="eye"
-                                color="#efefef"
-                                position="-0.16 0.1 -0.35"
-                                scale="0.12 0.12 0.12">
-                                <a-sphere
-                                    class="pupil"
-                                    color="#000"
-                                    position="0 0 -1"
-                                    scale="0.2 0.2 0.2"></a-sphere>
-                            </a-sphere>
-                        </a-entity>
-                    </a-entity>
-                </template>
+        <template id="avatar-template">
+            <a-entity class="avatar" networked-audio-source>
+                <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
+                <a-entity class="face" position="0 0.05 0">
+                    <a-sphere
+                            class="eye"
+                            color="#efefef"
+                            position="0.16 0.1 -0.35"
+                            scale="0.12 0.12 0.12">
+                        <a-sphere
+                                class="pupil"
+                                color="#000"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                    <a-sphere
+                            class="eye"
+                            color="#efefef"
+                            position="-0.16 0.1 -0.35"
+                            scale="0.12 0.12 0.12">
+                        <a-sphere
+                                class="pupil"
+                                color="#000"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2"></a-sphere>
+                    </a-sphere>
+                </a-entity>
+            </a-entity>
+        </template>
         <a-asset-item id="left-hand-model" src="./assets/leftHandHigh.glb"></a-asset-item>
         <a-asset-item id="right-hand-model" src="./assets/rightHandHigh.glb"></a-asset-item>
 
@@ -168,59 +169,52 @@
 
 <div id="worddisplay"></div>
 
+<a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
+</a-box>
+
+<a-entity light="color: #ccccff; intensity: 0.4; type: ambient;" visible=""></a-entity>
+<a-entity light="color: #ffaaff; intensity: 0.6" position="5 5 5"></a-entity>
+</a-scene>
+
 <div class="actions">
-  <button id="mic-btn" type="button" class="button">Mute Mic</button>
-  <p style="color: white;"><span id="am-i-the-host">waiting for others to join . . .</span></p>
-  <p style="color: white;">(id: <span id="whoami"></span>)</p>
-  <button id="start-game" type="button" class="button" onclick="rungame()">start a game</button>
+    <button id="mic-btn" type="button" class="button">Mute Mic</button>
+    <p style="color: white;">am i the bookkeeper? <span id="am-i-the-host">yes</span></p>
+    <button id="start-game" type="button" class="button" onclick="startgame()">start a game</button>
 </div>
 
-            <a-box color="green" depth="1" height="1" width="1" position="0 1 -5" scale-on-mouseenter>
-            </a-box>
 
-            <a-entity light="color: #ccccff; intensity: 0.4; type: ambient;" visible=""></a-entity>
-            <a-entity light="color: #ffaaff; intensity: 0.6" position="5 5 5"></a-entity>
-        </a-scene>
+<script>
+  document.body.addEventListener('connected', function (evt) {
+    console.error('connected event. clientId =', evt.detail.clientId);
+  });
 
-        <div class="actions">
-          <button id="mic-btn" type="button" class="button">Mute Mic</button>
-          <p style="color: white;">am i the bookkeeper? <span id="am-i-the-host">yes</span></p>
-          <button id="start-game" type="button" class="button" onclick="startgame()">start a game</button>
-        </div>
-      
+  document.body.addEventListener('clientConnected', function (evt) {
+    console.error('clientConnected event. clientId =', evt.detail.clientId);
+  });
 
-        <script>
-            document.body.addEventListener('connected', function (evt) {
-              console.error('connected event. clientId =', evt.detail.clientId);
-            });
-            
-            document.body.addEventListener('clientConnected', function (evt) {
-              console.error('clientConnected event. clientId =', evt.detail.clientId);
-            });
-            
-            document.body.addEventListener('clientDisconnected', function (evt) {
-              console.error('clientDisconnected event. clientId =', evt.detail.clientId);
-            });
-            
-            document.body.addEventListener('entityCreated', function (evt) {
-              console.error('entityCreated event', evt.detail.el);
-            });
-            
-            document.body.addEventListener('entityRemoved', function(evt) {
-              console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
-            });
+  document.body.addEventListener('clientDisconnected', function (evt) {
+    console.error('clientDisconnected event. clientId =', evt.detail.clientId);
+  });
 
-            let micEnabled = true;
-            const micBtnEle = document.getElementById("mic-btn");
-            function onConnect() {
-                console.log("onConnect", new Date());
+  document.body.addEventListener('entityCreated', function (evt) {
+    console.error('entityCreated event', evt.detail.el);
+  });
 
-                micBtnEle.addEventListener("click", function () {
-                    NAF.connection.adapter.enableMicrophone(!micEnabled);
-                    micEnabled = !micEnabled;
-                    micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
-                });
-            }
-        </script>
-    </body>
+  document.body.addEventListener('entityRemoved', function(evt) {
+    console.error('entityRemoved event. Entity networkId =', evt.detail.networkId);
+  });
+
+  let micEnabled = true;
+  const micBtnEle = document.getElementById("mic-btn");
+  function onConnect() {
+    console.log("onConnect", new Date());
+
+    micBtnEle.addEventListener("click", function () {
+      NAF.connection.adapter.enableMicrophone(!micEnabled);
+      micEnabled = !micEnabled;
+      micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
+    });
+  }
+</script>
+</body>
 </html>
