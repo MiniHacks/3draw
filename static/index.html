@@ -21,6 +21,26 @@
               'player-info'
             ]
           });
+          NAF.schemas.add({
+            template: '#cube-template',
+            components: [
+              "position",
+              {
+                selector: '.cube',
+                component: 'rotation'
+              },
+              {
+                selector: '.cube',
+                component: 'material',
+                property: 'color'
+              },
+              // {
+              //   selector: '.cube',
+              //   component: 'toggle-ownership',
+              //   property: 'direction'
+              // }
+            ]
+          });
         }
         const components = NAF.schemas.getComponentsOriginal(template);
         return components;
@@ -40,7 +60,8 @@
     <script src="js/teleport-controller.js"></script>
     <script src="js/bookkeeping.js"></script>
     <script src="js/speech-recognition.js"></script>
-    <script src="js/grabbing.js"></script>
+    <script src="js/random-color.js"></script>
+    <script src="js/spawning.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
 
     <script>
@@ -63,7 +84,7 @@
         style="z-index: 100; bottom: 24px; left: 24px; position:fixed;"
         oninput="document.getElementById('local-avatar').setAttribute('player-info', 'name', this.value)"
 />
-<a-scene stats>
+<a-scene>
 
     <!-- here is some funky model! -->
     <a-asset-item id="castle-obj" src="./assets/castle.obj"></a-asset-item>
@@ -120,7 +141,6 @@
             </a-entity>
         </template>
         <a-asset-item id="left-hand-model" src="./assets/leftHandHigh.glb"></a-asset-item>
-        <a-asset-item id="right-hand-model" src="./assets/rightHandHigh.glb"></a-asset-item>
 
         <template id="camera-rig-template">
             <a-entity></a-entity>
@@ -128,7 +148,6 @@
         <template id="avtr">
             <a-entity></a-entity>
         </template>
-
         <template id="head-template">
             <a-entity class="avatar" player-info>
                 <a-sphere class="head" scale="0.2 0.22 0.2"></a-sphere>
@@ -152,11 +171,18 @@
         </template>
 
         <template id="right-hand-template">
-            <a-entity>
-                <a-gltf-model class="tracked-right-hand" rotation="0 0 -90" src="#right-hand-model"></a-gltf-model>
+            <a-entity class="tracked-right-hand">
+<!--                <a-gltf-model class="tracked-right-hand" rotation="0 0 -90" src="#right-hand-model"></a-gltf-model>-->
             </a-entity>
         </template>
-
+        <a-mixin id="voxel"
+                 geometry="primitive: box; height: 0.5; width: 0.5; depth: 0.5"
+                 material="shader: standard"
+                 random-color networked="template:#blck;attachTemplateToLocal:true"
+                 snap="offset: 0.125 0.125 0.125; snap: 0.25 0.25 0.25"></a-mixin>
+        <template id="blck">
+            <a-entity mixin="voxel"></a-entity>
+        </template>
     </a-assets>
 
     <a-entity id="camera-rig"
@@ -166,8 +192,6 @@
     >
         <a-entity id="local-avatar" position="0 1.6 0" wasd-controls networked="template:#avtr" tracked-vr-hands>
             <a-entity id="local-head" camera look-controls networked="template:#head-template;attachTemplateToLocal:false;"></a-entity>
-            <a-box color="green" depth=".2" height=".2" width=".2" position="0 .5 -.2"></a-box>
-            <a-sphere color="green" radius=".1" position="-.3 1.5 -.2"></a-sphere>
         </a-entity>
 <!--        <a-entity id="local-avatar" camera position="0 1.6 0" look-controls wasd-controls-->
 <!--                  networked="template:#head-template;attachTemplateToLocal:false;">-->
@@ -193,7 +217,6 @@
 
 <a-entity light="color: #ccccff; intensity: 0.4; type: ambient;" visible=""></a-entity>
 <a-entity light="color: #ffaaff; intensity: 0.6" position="5 5 5"></a-entity>
-</a-scene>
 
 <div class="actions">
     <button id="mic-btn" type="button" class="button">Mute Mic</button>
@@ -236,6 +259,11 @@
       micBtnEle.textContent = micEnabled ? "Mute Mic" : "Unmute Mic";
     });
   }
+  document.addEventListener("keypress", evt => {
+    if(evt.key === "Escape")
+      NAF.connection.broadcastDataGuaranteed("clear", true)
+    else console.log(evt);
+  })
 </script>
 </body>
 </html>

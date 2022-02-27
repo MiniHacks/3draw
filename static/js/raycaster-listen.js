@@ -3,12 +3,12 @@ console.log("raycasting");
 AFRAME.registerComponent("raycaster-listen", {
     init: function (data) {
         const plane = document.querySelector("#plane");
-        // plane.addEventListener("raycaster-intersected", (evt) => {
-        //     this.raycastr = evt.detail.el;
-        // });
-        // plane.addEventListener("raycaster-intersected-cleared", (evt) => {
-        //     this.raycastr = null;
-        // });
+        plane.addEventListener("raycaster-intersected", (evt) => {
+            this.raycastr = evt.detail.el;
+        });
+        plane.addEventListener("raycaster-intersected-cleared", (evt) => {
+            this.raycastr = null;
+        });
         this.el.addEventListener("gripdown", (event) => {
             const entity = document.createElement("a-box");
             if (this.intersectionPoint) {
